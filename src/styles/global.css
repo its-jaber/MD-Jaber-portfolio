@@ -39,7 +39,7 @@
   --space-m: clamp(24px, 1.3rem + 0.6vw, 32px);
   --space-l: clamp(32px, 1.6rem + 1.4vw, 56px);
   --space-xl: clamp(48px, 2rem + 2.6vw, 88px);
-  --section-y: clamp(64px, 3rem + 4vw, 128px);
+  --section-y: clamp(56px, 2.5rem + 4vw, 112px);
 
   color-scheme: dark;
 }
