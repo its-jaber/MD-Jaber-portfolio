@@ -53,6 +53,27 @@ cover: ../../../../asset-inbox/design-concepts/fitness-gym-lovable-long.png
 Screenshots narrower than 800px are shown at their real size (never stretched). Long
 full-page captures get a scrollable preview on desktop and open fullscreen on touch.
 
+## Capturing a published project
+
+For projects with a live URL (e.g. a Lovable build), capture authentic screenshots instead
+of exporting them by hand:
+
+```bash
+npx playwright install chromium        # once per computer
+npm run capture -- https://wellclean.lovable.app/ wellclean design-concepts
+```
+
+This saves into the git-ignored `asset-inbox/design-concepts/`:
+
+| File | What |
+|---|---|
+| `wellclean-desktop-1440.png` | 1440×900 desktop viewport (top of the page) |
+| `wellclean-full-1440.png` | Full page at 1440px wide, captured in scrolled segments so scroll animations have played, then stitched; the fixed header appears once |
+| `wellclean-mobile-390.png` | 390×844 mobile viewport at 2× density (780px file) |
+| `wellclean-capture.json` | URL, time and settings, as a record of where the images came from |
+
+Nothing is edited or upscaled. Review the images before pointing a draft at them.
+
 ## 1. Add a new project (optional)
 
 ```bash

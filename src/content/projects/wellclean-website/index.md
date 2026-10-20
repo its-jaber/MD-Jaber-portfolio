@@ -6,8 +6,8 @@ status: draft          # change to "published" only after Jaber approves
 verified: false        # set to true once copy and assets are confirmed
 category: Website
 stage: concept
-stageNote: "An AI-assisted design concept made with Lovable, not a live client site. Ratings, customer counts, names, locations, photos and prices in the design are placeholder content."
-kind: "Website design concept"
+stageNote: "An AI-assisted concept project made with Lovable, not a real cleaning business. Its reviews, statistics, business identity and contact details are demonstration content, not verified claims."
+kind: "AI-assisted website concept"
 year: ""               # TODO(verify): e.g. "2026"
 role: "TODO: what you personally did (prompting, direction, editing)"
 stack: ["Lovable"]
@@ -15,6 +15,8 @@ tags: ["Website concept", "Cleaning service", "Lead form"]
 accent: "#2f7bf6"
 featured: false
 order: 2
+links:
+  demo: https://wellclean.lovable.app/   # published Lovable build of the concept
 # Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
 cover: ../../../../asset-inbox/design-concepts/wellclean-lovable-long.png
 coverAlt: "Full-page screenshot of the WellClean website concept: light hero with a cleaning team photo, six service cards, three booking steps, about section, reviews, before-and-after photos, three pricing plans, FAQs and a quote form."
@@ -34,7 +36,7 @@ A website design concept for a home and office cleaning business, created with L
 
 ## Status
 
-This is a design concept, not a site for a real cleaning company. The ratings, customer numbers, team photos, reviews, prices and contact details shown are placeholder design content.
+This is an AI-assisted concept project, not a site for a real cleaning company. WellClean's reviews, ratings, customer numbers, team photos, prices, business identity and contact details are demonstration content, not verified business claims. The live demo link opens the published concept build.
 
 ## My role
 
