@@ -6,11 +6,11 @@ const year = new Date().getFullYear();
 
 <footer class="footer">
   <div class="container footer__inner">
-    <a href="/" class="footer__big" aria-label="Back to home">
-      <span>Md</span><em class="serif">Jaber</em>
+    <a href="/" class="footer__big wordmark" aria-label="Md Jaber, back to home">
+      <span class="wordmark__md" aria-hidden="true">Md</span><span class="wordmark__jaber" aria-hidden="true">Jaber</span>
     </a>
     <div class="footer__row">
-      <p class="muted">© {year} {site.name}. Built with care and AI-assisted tooling.</p>
+      <p class="muted">© {year} {site.name}. Built with AI-assisted tools.</p>
       <ul class="footer__links">
         <li><a href={`mailto:${site.email}`}>Email</a></li>
         {socials.map((s) => <li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>)}

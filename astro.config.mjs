@@ -7,4 +7,6 @@ export default defineConfig({
   site: 'https://example.com',
   integrations: [react()],
   build: { format: 'directory' },
+  // Keeps the local preview clean (the toolbar overlays the bottom of the page).
+  devToolbar: { enabled: false },
 });

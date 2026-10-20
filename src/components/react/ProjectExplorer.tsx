@@ -62,7 +62,7 @@ export default function ProjectExplorer({ projects, categories, variant = 'full'
           Detailed case studies are <em className="serif accent">being prepared.</em>
         </h3>
         <p>
-          I’m putting together verified write-ups, screenshots and demos for my product, website and automation work.
+          I’m preparing write-ups, screenshots and demos of my product, website and automation work.
           Want a walkthrough before they go live?
         </p>
         <a className="btn" href="/#contact">
@@ -122,8 +122,8 @@ export default function ProjectExplorer({ projects, categories, variant = 'full'
             <motion.li
               key={p.slug}
               layout={reduce ? false : 'position'}
-              initial={{ opacity: 0, y: 24, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.18 } }}
               transition={reduce ? { duration: 0 } : { layout: MOVE, duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Math.min(i, 6) * 0.04 }}
             >

@@ -1,0 +1,29 @@
+---
+/** Astro twin of react/MediaFrame.tsx (case-study pages). Keep markup in sync. */
+import { glyphs } from '../lib/glyphs';
+
+interface Props {
+  label: string;
+  category: string;
+}
+const { label, category } = Astro.props;
+const paths = glyphs[category] ?? glyphs.Website!;
+const hasMedia = Astro.slots.has('default');
+---
+
+<div class="frame">
+  <div class="frame__bar" aria-hidden="true"><i></i><i></i><i></i><span class="frame__url">{label}</span></div>
+  <div class="frame__view">
+    {
+      hasMedia ? (
+        <slot />
+      ) : (
+        <div class="frame__canvas" aria-hidden="true">
+          <svg class="frame__glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            {paths.map((d) => <path d={d} />)}
+          </svg>
+        </div>
+      )
+    }
+  </div>
+</div>

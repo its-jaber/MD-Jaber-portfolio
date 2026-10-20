@@ -26,15 +26,30 @@ export async function getProjects(): Promise<Project[]> {
 
 export const isDraft = (p: Project) => p.data.status !== 'published';
 
-export function initials(title: string) {
-  return title
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
-    .join('');
+/** Placeholder copy (anything containing TODO) is never rendered; returns undefined instead. */
+export const clean = (text?: string) => (text && !/TODO/i.test(text) ? text : undefined);
+
+/**
+ * Draft bodies only: turns paragraphs that start with "TODO" into tidy
+ * <p class="slot"> placeholders so previews never show raw TODO markers.
+ * Published projects can't contain TODO (the build fails), so they always use <Content />.
+ */
+export function draftHtmlWithSlots(p: Project): string | undefined {
+  const html = p.rendered?.html;
+  if (!html || !/TODO/.test(p.body ?? '')) return undefined;
+  return html.replace(/<p>\s*TODO\s*:?\s*([\s\S]*?)<\/p>/g, '<p class="slot">$1</p>');
 }
 
+/** Text for the frame's address pill: the live site's hostname, else the project slug. */
+export function frameLabel(p: Project) {
+  const url = p.data.links.live ?? p.data.links.demo;
+  if (url) {
+    try {
+      return new URL(url).hostname.replace(/^www\./, '');
+    } catch {}
+  }
+  return p.id;
+}
 
 /** Converts a collection entry into the plain props the React card needs (with an optimised cover). */
 export async function toCard(p: Project): Promise<CardProject> {
@@ -53,15 +68,15 @@ export async function toCard(p: Project): Promise<CardProject> {
   return {
     slug: p.id,
     title: d.title,
-    tagline: d.tagline,
+    tagline: clean(d.tagline),
     category: d.category,
-    kind: d.kind,
+    kind: clean(d.kind) ?? d.category,
     year: d.year || undefined,
     tags: d.tags,
     stack: d.stack,
     accent: d.accent,
     draft: isDraft(p),
-    initials: initials(d.title),
+    frameLabel: frameLabel(p),
     cover,
   };
 }

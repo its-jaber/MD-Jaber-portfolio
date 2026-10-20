@@ -16,6 +16,12 @@ Six drafts already exist: `floowtix-crm`, `bebshaflow`, `n8n-automation`,
 `doctor-website`, `plumbing-website`, `gym-website`. Every `TODO` in them is a gap
 to fill with **real** information.
 
+TODO text is never shown on the site. In the dev preview, an empty field is simply
+hidden, and a `TODO` paragraph in the case study shows as a dashed "Content pending"
+slot. Every visual sits in a browser-style frame: without a screenshot it shows an
+abstract category graphic, and with one it frames your image, so the layout doesn't
+change when real assets arrive.
+
 ## 1. Add a new project (optional)
 
 ```bash
@@ -60,7 +66,7 @@ Process, Result). It's plain Markdown, so add headings, lists, quotes or images 
 ## 4. Preview
 
 ```bash
-npm run dev            # http://localhost:4321, drafts shown with a DRAFT badge
+npm run dev            # http://localhost:4321, drafts shown with a small “Draft” label
 ```
 
 ## 5. Publish
@@ -82,7 +88,9 @@ Other useful fields: `featured` (show on the home page), `order` (lower = earlie
 
 ## Troubleshooting
 
-- **A project disappeared from the dev server after a build error.** Stop the dev
-  server, delete the `.astro/` folder, and start `npm run dev` again. Astro caches
-  content and can hold on to the failed entry.
+- **A project disappeared from the dev server after a build error.** Run
+  `npx astro dev stop`, delete the `.astro/` folder, then `npm run dev` again. Astro
+  caches content and can hold on to the failed entry.
+- **"Dev server running" but nothing opens.** Astro 7 runs the dev server in the
+  background. Use `npx astro dev status`, `npx astro dev logs` or `npx astro dev stop`.
 - **Image not found.** Paths in frontmatter are relative to `index.md` (start with `./`).

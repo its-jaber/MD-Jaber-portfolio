@@ -9,21 +9,25 @@ const cards = await Promise.all(projects.map(toCard));
 const drafts = cards.filter((c) => c.draft).length;
 ---
 
-<BaseLayout title="Work" description="Project Explorer: products, websites and automation work by Md Jaber.">
+<BaseLayout title="Work" description="Project Explorer: product, website and automation work by Md Jaber, made with AI-assisted tools.">
   <section class="page-head">
     <div class="container">
       <p class="eyebrow" data-reveal>Project Explorer</p>
       <h1 class="page-head__title" data-split>
-        <span class="line-mask"><span style="--i:0">Things I’ve</span></span>
-        <span class="line-mask"><span style="--i:1"><em class="serif accent">designed & built.</em></span></span>
+        <span class="line-mask"><span style="--i:0">Things I’ve made</span></span>
+        <span class="line-mask"><span style="--i:1"><em class="serif accent">with AI tools.</em></span></span>
       </h1>
       <p class="page-head__lead" data-reveal style="--d:250">
-        Filter by type or search by tool. Each project opens a case study covering the problem, the build and the result.
+        {
+          cards.length > 0
+            ? 'Filter by type or search by tool. Each project opens a case study covering the problem, the process and the result.'
+            : 'Product, website and automation projects, each with a case study covering the problem, the process and the result.'
+        }
       </p>
       {
         showDrafts && drafts > 0 && (
           <p class="draft-note" data-reveal style="--d:350">
-            <span class="badge-draft">Preview</span> Showing {drafts} draft {drafts === 1 ? 'project' : 'projects'}. Drafts are never part of the production build.
+            <span class="badge-draft">Preview</span> {drafts} unpublished {drafts === 1 ? 'project' : 'projects'}, hidden in production
           </p>
         )
       }

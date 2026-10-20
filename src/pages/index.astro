@@ -5,7 +5,7 @@ import Hero from '../components/react/Hero';
 import ProjectExplorer from '../components/react/ProjectExplorer';
 import Magnetic from '../components/react/Magnetic';
 import portrait from '../assets/portrait.jpg';
-import { site, heroLines, heroIntro, marquee, capabilities, process, about } from '../config/site';
+import { site, heroLines, heroIntro, marquee, capabilities, process, about, facts } from '../config/site';
 import { categories } from '../content.config';
 import { getProjects, toCard } from '../lib/projects';
 
@@ -52,20 +52,30 @@ const socials = site.socials.filter((s) => s.url);
   <!-- About -->
   <section class="section about" id="about">
     <div class="container about__grid">
-      <div>
+      <div class="about__intro">
         <p class="eyebrow" data-reveal>About</p>
-      </div>
-      <div class="about__body">
         <h2 class="about__lead" data-split>
           <span class="line-mask"><span style="--i:0">Founder first.</span></span>
-          <span class="line-mask"><span style="--i:1">Builder <em class="serif accent">by habit.</em></span></span>
+          <span class="line-mask"><span style="--i:1">Maker <em class="serif accent">with AI.</em></span></span>
         </h2>
-        {about.map((p, i) => <p data-reveal style={`--d:${150 + i * 120}`}>{p}</p>)}
-        <dl class="about__facts" data-reveal style="--d:400">
-          <div><dt>Company</dt><dd>{site.founder.url ? <a href={site.founder.url} target="_blank" rel="noopener noreferrer">{site.founder.company} ↗</a> : site.founder.company}</dd></div>
-          <div><dt>Focus</dt><dd>Websites · CRM · Automation</dd></div>
-          <div><dt>Way of working</dt><dd>AI-assisted, human-reviewed</dd></div>
-          <div><dt>Based in</dt><dd>{site.location}</dd></div>
+      </div>
+      <div class="about__body">
+        {about.map((p, i) => <p data-reveal style={`--d:${100 + i * 120}`}>{p}</p>)}
+        <dl class="about__facts" data-reveal style="--d:340">
+          {
+            facts.map((f) => (
+              <div>
+                <dt>{f.label}</dt>
+                <dd>
+                  {'link' in f && site.founder.url ? (
+                    <a href={site.founder.url} target="_blank" rel="noopener noreferrer">{f.value} ↗</a>
+                  ) : (
+                    f.value
+                  )}
+                </dd>
+              </div>
+            ))
+          }
         </dl>
       </div>
     </div>
@@ -75,10 +85,10 @@ const socials = site.socials.filter((s) => s.url);
   <section class="section services" id="services">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-reveal>What I do</p>
+        <p class="eyebrow" data-reveal>What I work on</p>
         <h2 data-split>
-          <span class="line-mask"><span style="--i:0">Four ways I help</span></span>
-          <span class="line-mask"><span style="--i:1">a business <em class="serif accent">move faster.</em></span></span>
+          <span class="line-mask"><span style="--i:0">Four areas</span></span>
+          <span class="line-mask"><span style="--i:1">I <em class="serif accent">focus on.</em></span></span>
         </h2>
       </div>
       <ol class="services__list">
@@ -109,7 +119,7 @@ const socials = site.socials.filter((s) => s.url);
         </div>
         {featured.length > 0 && <a class="btn btn--ghost" href="/work" data-reveal>View all projects <span class="arrow" aria-hidden="true">→</span></a>}
       </div>
-      <ProjectExplorer client:visible projects={featured} categories={categories} variant="featured" />
+      <ProjectExplorer client:load projects={featured} categories={categories} variant="featured" />
     </div>
   </section>
 
@@ -118,7 +128,7 @@ const socials = site.socials.filter((s) => s.url);
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal>How I work</p>
-        <h2 data-split><span class="line-mask"><span>From messy process <em class="serif accent">to system.</em></span></span></h2>
+        <h2 data-split><span class="line-mask"><span>From idea <em class="serif accent">to working version.</em></span></span></h2>
       </div>
       <ol class="process__list">
         {
@@ -144,7 +154,7 @@ const socials = site.socials.filter((s) => s.url);
         <span class="line-mask"><span style="--i:1">worth <em class="serif accent">automating?</em></span></span>
       </h2>
       <p class="contact__lead" data-reveal style="--d:200">
-        Tell me what your business does today and where time is being lost. I’ll reply with honest next steps.
+        Tell me what your business does today and where time goes. I’ll reply honestly about whether and how I can help.
       </p>
       <div class="contact__actions" data-reveal style="--d:300">
         <Magnetic client:visible strength={0.25}>

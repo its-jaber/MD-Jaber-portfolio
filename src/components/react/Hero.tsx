@@ -22,14 +22,19 @@ type Props = {
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+// `initial` is always "hidden" so server and client markup match; reduced motion
+// just collapses the transition to an instant change (plus a CSS backstop).
+type C = { v: number; reduce: boolean | null };
+const now = { duration: 0 };
+
 const line: Variants = {
   hidden: { y: '110%', rotate: 2.5 },
-  show: (i: number) => ({ y: '0%', rotate: 0, transition: { duration: 1.25, ease: EASE, delay: 0.25 + i * 0.12 } }),
+  show: ({ v, reduce }: C) => ({ y: '0%', rotate: 0, transition: reduce ? now : { duration: 1.25, ease: EASE, delay: 0.25 + v * 0.12 } }),
 };
 
 const fade: Variants = {
   hidden: { opacity: 0, y: 24 },
-  show: (d: number) => ({ opacity: 1, y: 0, transition: { duration: 1, ease: EASE, delay: d } }),
+  show: ({ v, reduce }: C) => ({ opacity: 1, y: 0, transition: reduce ? now : { duration: 1, ease: EASE, delay: v } }),
 };
 
 /** `*word*` inside a line renders in the italic serif accent face. */
@@ -72,14 +77,14 @@ export default function Hero({ lines, intro, role, location, availability, child
     py.set(0);
   };
 
-  const initial = reduce ? 'show' : 'hidden';
+  const c = (v: number): C => ({ v, reduce });
 
   return (
     <motion.section ref={ref} className="hero" style={{ opacity: dim }} aria-labelledby="hero-title">
       <div className="hero__aura" aria-hidden />
       <div className="container hero__grid">
         <motion.div className="hero__copy" style={{ y: headY }}>
-          <motion.div className="hero__meta" variants={fade} initial={initial} animate="show" custom={0.1}>
+          <motion.div className="hero__meta" variants={fade} initial="hidden" animate="show" custom={c(0.1)}>
             <span>{role}</span>
             <span className="hero__sep" aria-hidden />
             <span>{location}</span>
@@ -88,18 +93,18 @@ export default function Hero({ lines, intro, role, location, availability, child
           <h1 id="hero-title" className="hero__title">
             {lines.map((l, i) => (
               <span className="line-mask" key={i}>
-                <motion.span variants={line} initial={initial} animate="show" custom={i} style={{ display: 'inline-block' }}>
+                <motion.span variants={line} initial="hidden" animate="show" custom={c(i)} style={{ display: 'inline-block' }}>
                   {renderLine(l)}
                 </motion.span>
               </span>
             ))}
           </h1>
 
-          <motion.p className="hero__intro" variants={fade} initial={initial} animate="show" custom={0.85}>
+          <motion.p className="hero__intro" variants={fade} initial="hidden" animate="show" custom={c(0.85)}>
             {intro}
           </motion.p>
 
-          <motion.div className="hero__ctas" variants={fade} initial={initial} animate="show" custom={1}>
+          <motion.div className="hero__ctas" variants={fade} initial="hidden" animate="show" custom={c(1)}>
             <Magnetic>
               <a className="btn" href="/work">
                 Explore my work <span className="arrow" aria-hidden>→</span>
@@ -122,9 +127,9 @@ export default function Hero({ lines, intro, role, location, availability, child
           <motion.div
             className="hero__portrait"
             style={{ rotateX: rx, rotateY: ry, transformPerspective: 1000 }}
-            initial={reduce ? false : { clipPath: 'inset(100% 0% 0% 0% round 28px)', scale: 1.08 }}
+            initial={{ clipPath: 'inset(100% 0% 0% 0% round 28px)', scale: 1.08 }}
             animate={{ clipPath: 'inset(0% 0% 0% 0% round 28px)', scale: 1 }}
-            transition={{ duration: 1.6, ease: EASE, delay: 0.35 }}
+            transition={reduce ? now : { duration: 1.6, ease: EASE, delay: 0.35 }}
           >
             {children}
             <div className="hero__portrait-shade" aria-hidden />
@@ -132,9 +137,9 @@ export default function Hero({ lines, intro, role, location, availability, child
           {availability && (
             <motion.div
               className="hero__status"
-              initial={reduce ? false : { opacity: 0, y: 20, scale: 0.9 }}
+              initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.9, ease: EASE, delay: 1.3 }}
+              transition={reduce ? now : { duration: 0.9, ease: EASE, delay: 1.3 }}
             >
               <span className="dot" aria-hidden /> {availability}
             </motion.div>

@@ -9,12 +9,12 @@
 export const site = {
   name: 'Md Jaber',
   shortName: 'Jaber',
-  title: 'Md Jaber: Founder, builder and automation designer',
+  title: 'Md Jaber: Founder & AI-assisted product creator',
   description:
-    'Portfolio of Md Jaber, founder of FloowTix: websites, CRM products and n8n automations for businesses, built with AI-assisted workflows.',
+    'Portfolio of Md Jaber, founder of FloowTix. Websites, CRM setups and n8n automations created with AI tools such as Claude Code and Codex, plus no-code and CRM platforms.',
   // TODO(verify): location wording.
   location: 'Bangladesh',
-  role: 'Founder · Web & Automation Builder',
+  role: 'Founder · AI-assisted product creator',
   // TODO(verify): this is the email on your account. Change it if you want a different public contact address.
   email: 'mdjaber.officials@gmail.com',
   // Shown in the nav + hero. Set to false to hide the badge.
@@ -36,62 +36,72 @@ export const site = {
   ],
 } as const;
 
-/** Hero headline, split into lines for the reveal animation. */
-export const heroLines = ['I build systems', 'that make businesses', '*run on their own.*'];
+/** Hero headline, split into lines for the reveal animation. `*text*` = serif accent. */
+export const heroLines = ['I turn ideas into', 'working digital', '*products.*'];
 
 export const heroIntro =
-  'Founder of FloowTix. I design and build websites, CRM products and n8n automations, using AI as a deliberate part of how I research, write, design and code.';
+  'Founder of FloowTix. I create websites, CRM setups and n8n automations by directing AI tools like Claude Code and Codex, alongside no-code and CRM platforms.';
 
 /** Short capability words for the marquee. */
 export const marquee = [
   'Business websites',
-  'CRM products',
+  'CRM setups',
   'n8n automation',
-  'AI-assisted development',
-  'Landing pages',
-  'Workflow design',
+  'Claude Code',
+  'Codex',
+  'No-code tools',
+  'Product planning',
 ];
 
 /**
- * What Jaber actually does. Keep these honest: describe the work, not invented outcomes.
+ * What Jaber actually does. Keep these honest: describe the work and the method,
+ * never invented outcomes or a higher level of coding expertise than is true.
  */
 export const capabilities = [
   {
     index: '01',
-    title: 'Websites that sell the business',
-    body: 'Responsive marketing sites for local businesses such as clinics, trades and gyms. Clear structure, fast pages and a direct path to contact.',
-    tags: ['Responsive UI', 'Landing pages', 'SEO basics'],
+    title: 'Business websites',
+    body: 'Marketing sites for local businesses such as clinics, trades and gyms, focused on clear structure, mobile-friendly layouts and an easy way to get in touch.',
+    tags: ['Landing pages', 'Responsive layouts', 'Contact flows'],
   },
   {
     index: '02',
-    title: 'CRM & business products',
-    body: 'Product thinking for tools like FloowTix CRM and BebshaFlow: mapping real workflows into screens, data and features that a team will use.',
-    tags: ['Product design', 'Dashboards', 'Data flows'],
+    title: 'CRM & product concepts',
+    body: 'Shaping products like FloowTix CRM and BebshaFlow: mapping how a business works into screens, data and features, then creating them with AI coding tools.',
+    tags: ['Product planning', 'Dashboards', 'CRM platforms'],
   },
   {
     index: '03',
     title: 'n8n automation',
-    body: 'Workflows that connect forms, messaging, sheets and CRMs so repetitive follow-ups and hand-offs happen without manual copy-paste.',
+    body: 'Workflows that connect forms, messaging, sheets and CRMs to cut down repetitive copy-paste and follow-up steps.',
     tags: ['n8n', 'Integrations', 'Webhooks'],
   },
   {
     index: '04',
     title: 'AI-assisted building',
-    body: 'I work with AI tools openly to plan, draft, design and code. I direct, review and test what ships, so the speed helps without lowering the quality.',
-    tags: ['Prompting', 'Rapid prototyping', 'Review & QA'],
+    body: 'I’m not a traditional programmer. I plan, prompt and review while Claude Code and Codex write much of the code, then I test the result myself before sharing it.',
+    tags: ['Claude Code', 'Codex', 'No-code tools'],
   },
 ];
 
 /** How a project runs. */
 export const process = [
-  { step: 'Understand', body: 'Learn how the business works today: customers, bottlenecks and what “done” looks like.' },
-  { step: 'Design', body: 'Shape the structure, flows and visuals before writing a lot of code.' },
-  { step: 'Build', body: 'Ship in small, reviewable steps with AI-assisted speed and human judgement.' },
-  { step: 'Automate', body: 'Remove the repetitive parts with n8n so the system keeps working after launch.' },
+  { step: 'Understand', body: 'Learn how the business works today: its customers, its bottlenecks and what a useful result looks like.' },
+  { step: 'Plan', body: 'Map pages, flows and data before anything is built, so the AI tools get clear direction.' },
+  { step: 'Create', body: 'Build in small steps with Claude Code, Codex and no-code tools, reviewing each step as it lands.' },
+  { step: 'Connect', body: 'Use n8n and CRM platforms to link the tools the business already relies on.' },
 ];
 
 /** Founder story paragraphs (About section). TODO(verify): edit freely in your own voice. */
 export const about = [
-  'I’m Md Jaber, the founder of FloowTix. My work sits where business operations meet software: the websites people find you through, the CRM your team works in, and the automations that link them.',
-  'I build with AI on purpose. It speeds up research, drafting, design and code, and I stay responsible for every decision, review and test before anything goes live.',
+  'I’m Md Jaber, founder of FloowTix. I work where business operations meet software: the website customers find, the CRM a team works in, and the automations that connect them.',
+  'I’m not a traditional programmer, and I don’t present myself as one. I use AI tools like Claude Code and Codex, plus no-code and CRM platforms, to turn plans into working products, and I test what they produce before I share it.',
 ];
+
+/** Quick facts under the About copy. */
+export const facts = [
+  { label: 'Company', value: 'FloowTix', link: 'founder' },
+  { label: 'Focus', value: 'Websites · CRM · Automation' },
+  { label: 'Tools', value: 'Claude Code · Codex · n8n' },
+  { label: 'Based in', value: site.location },
+] as const;

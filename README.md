@@ -22,7 +22,7 @@ Never deploy that build publicly.
 | Name, email, socials, all personal copy | `src/config/site.ts` |
 | Colours, fonts, spacing (design tokens) | `src/styles/global.css` (`:root`) |
 | Section/component styles | `src/styles/components.css` |
-| Portrait | `src/assets/portrait.jpg` |
+| Portrait (your supplied photo; replace the file to change it) | `src/assets/portrait.jpg`, `public/og-portrait.jpg` |
 | Projects + case studies | `src/content/projects/<slug>/index.md` |
 | Project schema + publish guard | `src/content.config.ts` |
 | Home page | `src/pages/index.astro` |
@@ -35,13 +35,21 @@ Adding and publishing projects: **[docs/IMPORTING_PROJECTS.md](docs/IMPORTING_PR
 
 - Dark, cinematic palette: one warm accent (`--accent`) plus a per-project accent.
 - Type: Inter Tight (UI/headlines) and Instrument Serif italic (accents), self-hosted via Fontsource.
+- Wordmark: "Md" in Inter Tight + "Jaber" in Instrument Serif italic (`.wordmark` in
+  `global.css`), the same pairing as the large footer mark.
 - Motion: masked line reveals, clip-path portrait reveal, scroll parallax, pointer tilt,
   spotlight cards, magnetic buttons, spring cursor, shared-layout filter chips, and
   view-transition page changes. All of it respects `prefers-reduced-motion`.
+- Scroll reveals replay every time a section re-enters the viewport, in both directions
+  (`src/scripts/motion.ts` for static sections, Framer `whileInView` for cards). An
+  element only resets once it has fully left the screen, so nothing flickers while read.
+  The hero entrance plays once per page load.
+- The browser scrollbar is hidden (native scrolling is unchanged); a thin accent
+  progress line at the top shows scroll position instead.
 - Project Explorer filter adapted from the 21st.dev "Filter Grid" pattern (accessible
   radiogroup, live counts, `popLayout` reflow, aria-live summary).
-- Projects without real screenshots show an abstract accent placeholder labelled
-  "Visuals coming soon", never a fake screenshot.
+- Projects without real screenshots show an abstract, framed category graphic, never
+  a fake screenshot. Placeholder (TODO) copy is never rendered.
 
 ## Before deploying
 

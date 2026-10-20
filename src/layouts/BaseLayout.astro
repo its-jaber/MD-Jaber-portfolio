@@ -45,6 +45,7 @@ const ogImage = new URL(image, Astro.site);
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <div class="progress" aria-hidden="true" transition:persist="progress"></div>
     <Nav />
     <main id="main">
       <slot />

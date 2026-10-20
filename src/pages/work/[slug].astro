@@ -2,7 +2,8 @@
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getProjects, isDraft, initials, type Project } from '../../lib/projects';
+import MediaFrame from '../../components/MediaFrame.astro';
+import { getProjects, isDraft, clean, frameLabel, draftHtmlWithSlots, type Project } from '../../lib/projects';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -21,13 +22,18 @@ const { project, next } = Astro.props;
 const d = project.data;
 const draft = isDraft(project);
 const { Content } = await render(project);
+const slotHtml = draft ? draftHtmlWithSlots(project) : undefined;
 
+// Placeholder (TODO) values are never rendered.
+const tagline = clean(d.tagline);
+const summary = clean(d.summary);
 const meta = [
-  { k: 'Type', v: d.kind },
-  { k: 'Role', v: d.role },
-  { k: 'Year', v: d.year },
-  { k: 'Client', v: d.client },
-].filter((m) => m.v && !/TODO/.test(m.v));
+  { k: 'Type', v: clean(d.kind) },
+  { k: 'Role', v: clean(d.role) },
+  { k: 'Year', v: clean(d.year) },
+  { k: 'Client', v: clean(d.client) },
+  { k: 'Stack', v: d.stack.length ? d.stack.join(' · ') : undefined },
+].filter((m) => m.v);
 
 const links = [
   { k: 'Visit live site', v: d.links.live },
@@ -35,21 +41,12 @@ const links = [
   { k: 'View code', v: d.links.repo },
 ].filter((l) => l.v);
 
-const hasMedia = Boolean(d.cover || d.video || d.gallery.length);
+const label = frameLabel(project);
 ---
 
-<BaseLayout title={d.title} description={d.summary} noindex={draft}>
+<BaseLayout title={d.title} description={summary ?? d.title} noindex={draft}>
   <article class="case" style={`--accent:${d.accent}`}>
-    {
-      draft && (
-        <div class="case__draft">
-          <div class="container">
-            <span class="badge-draft">Draft</span> This case study is unpublished and only visible in preview. Replace every TODO, add assets, then set
-            <code>verified: true</code> and <code>status: published</code>.
-          </div>
-        </div>
-      )
-    }
+    {draft && <p class="case__draft"><span class="badge-draft">Draft</span> Preview only · not included in the production build</p>}
 
     <header class="case__head">
       <div class="case__aura" aria-hidden="true"></div>
@@ -59,12 +56,20 @@ const hasMedia = Boolean(d.cover || d.video || d.gallery.length);
         <h1 class="case__title" data-split>
           <span class="line-mask"><span>{d.title}</span></span>
         </h1>
-        <p class="case__tagline" data-reveal style="--d:250">{d.tagline}</p>
+        {tagline && <p class="case__tagline" data-reveal style="--d:250">{tagline}</p>}
 
-        <div class="case__meta" data-reveal style="--d:350">
-          {meta.map((m) => <div><dt>{m.k}</dt><dd>{m.v}</dd></div>)}
-          {d.stack.length > 0 && <div><dt>Stack</dt><dd>{d.stack.join(' · ')}</dd></div>}
-        </div>
+        {
+          meta.length > 0 && (
+            <dl class="case__meta" data-reveal style="--d:350">
+              {meta.map((m) => (
+                <div>
+                  <dt>{m.k}</dt>
+                  <dd>{m.v}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
 
         {
           links.length > 0 && (
@@ -81,23 +86,22 @@ const hasMedia = Boolean(d.cover || d.video || d.gallery.length);
     </header>
 
     <div class="container">
-      {
-        d.cover ? (
-          <figure class="case__cover" data-reveal>
-            <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[800, 1400, 2000]} sizes="(min-width: 1320px) 1272px, 100vw" loading="eager" />
-          </figure>
-        ) : (
-          <div class="case__cover case__cover--empty" data-reveal aria-hidden="true">
-            <span class="card__initials">{initials(d.title)}</span>
-            <span class="card__pending">Screenshots &amp; video coming soon</span>
-          </div>
-        )
-      }
+      <figure class="case__cover" data-reveal>
+        {
+          d.cover ? (
+            <MediaFrame label={label} category={d.category}>
+              <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[800, 1400, 2000]} sizes="(min-width: 1360px) 1312px, 100vw" loading="eager" />
+            </MediaFrame>
+          ) : (
+            <MediaFrame label={label} category={d.category} />
+          )
+        }
+      </figure>
 
       <div class="case__layout">
         <aside class="case__summary" data-reveal>
           <p class="eyebrow">Summary</p>
-          <p>{d.summary}</p>
+          {summary ? <p>{summary}</p> : <p class="slot">A two or three sentence overview of the project.</p>}
           {
             d.outcomes.length > 0 && (
               <dl class="case__outcomes">
@@ -114,7 +118,7 @@ const hasMedia = Boolean(d.cover || d.video || d.gallery.length);
         </aside>
 
         <div class="prose" data-reveal style="--d:120">
-          <Content />
+          {slotHtml ? <Fragment set:html={slotHtml} /> : <Content />}
         </div>
       </div>
 
@@ -128,7 +132,7 @@ const hasMedia = Boolean(d.cover || d.video || d.gallery.length);
       }
 
       {
-        d.gallery.length > 0 && (
+        d.gallery.length > 0 ? (
           <div class="case__gallery">
             {d.gallery.map((g, i) => (
               <figure data-reveal style={`--d:${(i % 2) * 120}`}>
@@ -137,10 +141,18 @@ const hasMedia = Boolean(d.cover || d.video || d.gallery.length);
               </figure>
             ))}
           </div>
+        ) : (
+          draft && (
+            <div class="case__gallery" aria-hidden="true">
+              {[0, 1].map((i) => (
+                <div class="shot" data-reveal style={`--d:${i * 120}`}>
+                  <MediaFrame label={label} category={d.category} />
+                </div>
+              ))}
+            </div>
+          )
         )
       }
-
-      {draft && !hasMedia && <p class="case__missing">Missing assets: cover image, gallery screenshots, optional demo video, live link.</p>}
     </div>
 
     {
