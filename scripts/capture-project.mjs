@@ -37,8 +37,28 @@ mkdirSync(out, { recursive: true });
 
 const MAX_FULL_HEIGHT = 16000; // keep files a sensible size
 
+/** Runs a capture step; starts it over if the page navigates or reloads itself meanwhile (redirects, dev-server reloads). */
+async function retrying(step, tries = 3) {
+  for (let i = 1; ; i++) {
+    try {
+      return await step();
+    } catch (err) {
+      if (process.env.CAPTURE_DEBUG) console.error(`attempt ${i}: ${err.message.split('\n')[0]}`);
+      if (i >= tries || !/context was destroyed|navigat|interrupted/i.test(err.message)) throw err;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+}
+
+/** Load the page and let it settle. */
+async function open(page) {
+  const res = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  if (!res || !res.ok()) throw new Error(`Page answered ${res ? res.status() : 'no response'}`);
+  await settleOnce(page);
+}
+
 /** Scroll through the page so lazy images and scroll-triggered animations settle, then return to the top. */
-async function settle(page) {
+async function settleOnce(page) {
   await page.waitForLoadState('networkidle').catch(() => {});
   await page.evaluate(async () => {
     const step = Math.max(200, Math.floor(innerHeight * 0.6));
@@ -107,22 +127,21 @@ const record = { url, capturedAt: new Date().toISOString(), browser: channel ?? 
 try {
   // Desktop: viewport + full page
   const desk = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
-  const res = await desk.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  if (!res || !res.ok()) throw new Error(`Page answered ${res ? res.status() : 'no response'}`);
-  await settle(desk);
-  const top = join(out, `${name}-desktop-1440.png`);
-  await desk.screenshot({ path: top });
+  const full = await retrying(async () => {
+    await open(desk);
+    await desk.screenshot({ path: join(out, `${name}-desktop-1440.png`) });
+    return capturePage(desk, join(out, `${name}-full-1440.png`));
+  });
   record.files.push({ file: `${name}-desktop-1440.png`, viewport: '1440x900', scale: 1 });
-
-  const full = await capturePage(desk, join(out, `${name}-full-1440.png`));
   record.files.push({ file: `${name}-full-1440.png`, viewport: '1440 wide', method: 'scrolled segments, stitched; fixed header shown once', ...full, scale: 1 });
   await desk.close();
 
   // Mobile: 390px viewport at 2× density
   const mob = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
-  await mob.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await settle(mob);
-  await mob.screenshot({ path: join(out, `${name}-mobile-390.png`) });
+  await retrying(async () => {
+    await open(mob);
+    await mob.screenshot({ path: join(out, `${name}-mobile-390.png`) });
+  });
   record.files.push({ file: `${name}-mobile-390.png`, viewport: '390x844', scale: 2 });
   await mob.close();
 
@@ -131,6 +150,7 @@ try {
   for (const f of record.files) console.log(`  ${f.file}`);
 } catch (err) {
   console.error(`Capture failed: ${err.message}`);
+  if (process.env.CAPTURE_DEBUG) console.error(err.stack);
   process.exitCode = 1;
 } finally {
   await browser.close();
