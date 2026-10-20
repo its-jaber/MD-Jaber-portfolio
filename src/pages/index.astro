@@ -1,0 +1,159 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/react/Hero';
+import ProjectExplorer from '../components/react/ProjectExplorer';
+import Magnetic from '../components/react/Magnetic';
+import portrait from '../assets/portrait.jpg';
+import { site, heroLines, heroIntro, marquee, capabilities, process, about } from '../config/site';
+import { categories } from '../content.config';
+import { getProjects, toCard } from '../lib/projects';
+
+const projects = await getProjects();
+const featured = await Promise.all(
+  (projects.some((p) => p.data.featured) ? projects.filter((p) => p.data.featured) : projects).slice(0, 4).map(toCard),
+);
+const socials = site.socials.filter((s) => s.url);
+---
+
+<BaseLayout>
+  <Hero client:load lines={heroLines} intro={heroIntro} role={site.role} location={site.location} availability={site.availableForWork ? site.availabilityText : undefined}>
+    <Picture
+      src={portrait}
+      alt={`Portrait of ${site.name}`}
+      formats={['avif', 'webp']}
+      widths={[480, 800, 1200]}
+      sizes="(min-width: 960px) 38vw, 90vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </Hero>
+
+  <!-- Marquee -->
+  <section class="marquee" aria-label="What I work on">
+    <div class="marquee__track">
+      {
+        [0, 1].map((n) => (
+          <ul aria-hidden={n === 1 ? 'true' : undefined}>
+            {marquee.map((m) => (
+              <li>
+                {m}
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                  <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z" fill="currentColor" />
+                </svg>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section about" id="about">
+    <div class="container about__grid">
+      <div>
+        <p class="eyebrow" data-reveal>About</p>
+      </div>
+      <div class="about__body">
+        <h2 class="about__lead" data-split>
+          <span class="line-mask"><span style="--i:0">Founder first.</span></span>
+          <span class="line-mask"><span style="--i:1">Builder <em class="serif accent">by habit.</em></span></span>
+        </h2>
+        {about.map((p, i) => <p data-reveal style={`--d:${150 + i * 120}`}>{p}</p>)}
+        <dl class="about__facts" data-reveal style="--d:400">
+          <div><dt>Company</dt><dd>{site.founder.url ? <a href={site.founder.url} target="_blank" rel="noopener noreferrer">{site.founder.company} ↗</a> : site.founder.company}</dd></div>
+          <div><dt>Focus</dt><dd>Websites · CRM · Automation</dd></div>
+          <div><dt>Way of working</dt><dd>AI-assisted, human-reviewed</dd></div>
+          <div><dt>Based in</dt><dd>{site.location}</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="section services" id="services">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>What I do</p>
+        <h2 data-split>
+          <span class="line-mask"><span style="--i:0">Four ways I help</span></span>
+          <span class="line-mask"><span style="--i:1">a business <em class="serif accent">move faster.</em></span></span>
+        </h2>
+      </div>
+      <ol class="services__list">
+        {
+          capabilities.map((c, i) => (
+            <li class="service" data-reveal style={`--d:${i * 90}`}>
+              <span class="service__index">{c.index}</span>
+              <h3 class="service__title">{c.title}</h3>
+              <p class="service__body">{c.body}</p>
+              <ul class="service__tags">{c.tags.map((t) => <li class="chip">{t}</li>)}</ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Work -->
+  <section class="section work" id="work">
+    <div class="container">
+      <div class="section-head section-head--row">
+        <div>
+          <p class="eyebrow" data-reveal>Selected work</p>
+          <h2 data-split>
+            <span class="line-mask"><span style="--i:0">Products, sites</span></span>
+            <span class="line-mask"><span style="--i:1">& <em class="serif accent">automations.</em></span></span>
+          </h2>
+        </div>
+        {featured.length > 0 && <a class="btn btn--ghost" href="/work" data-reveal>View all projects <span class="arrow" aria-hidden="true">→</span></a>}
+      </div>
+      <ProjectExplorer client:visible projects={featured} categories={categories} variant="featured" />
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="section process">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow" data-reveal>How I work</p>
+        <h2 data-split><span class="line-mask"><span>From messy process <em class="serif accent">to system.</em></span></span></h2>
+      </div>
+      <ol class="process__list">
+        {
+          process.map((s, i) => (
+            <li data-reveal style={`--d:${i * 110}`}>
+              <span class="process__n">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{s.step}</h3>
+              <p>{s.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section contact" id="contact">
+    <div class="contact__aura" aria-hidden="true"></div>
+    <div class="container contact__inner">
+      <p class="eyebrow" data-reveal>Contact</p>
+      <h2 class="contact__title" data-split>
+        <span class="line-mask"><span style="--i:0">Have a process</span></span>
+        <span class="line-mask"><span style="--i:1">worth <em class="serif accent">automating?</em></span></span>
+      </h2>
+      <p class="contact__lead" data-reveal style="--d:200">
+        Tell me what your business does today and where time is being lost. I’ll reply with honest next steps.
+      </p>
+      <div class="contact__actions" data-reveal style="--d:300">
+        <Magnetic client:visible strength={0.25}>
+          <a class="btn contact__mail" href={`mailto:${site.email}?subject=Project%20enquiry`}>
+            {site.email} <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </Magnetic>
+        {socials.map((s) => <a class="btn btn--ghost" href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,159 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjects, isDraft, initials, type Project } from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props {
+  project: Project;
+  next?: Project;
+}
+
+const { project, next } = Astro.props;
+const d = project.data;
+const draft = isDraft(project);
+const { Content } = await render(project);
+
+const meta = [
+  { k: 'Type', v: d.kind },
+  { k: 'Role', v: d.role },
+  { k: 'Year', v: d.year },
+  { k: 'Client', v: d.client },
+].filter((m) => m.v && !/TODO/.test(m.v));
+
+const links = [
+  { k: 'Visit live site', v: d.links.live },
+  { k: 'View demo', v: d.links.demo },
+  { k: 'View code', v: d.links.repo },
+].filter((l) => l.v);
+
+const hasMedia = Boolean(d.cover || d.video || d.gallery.length);
+---
+
+<BaseLayout title={d.title} description={d.summary} noindex={draft}>
+  <article class="case" style={`--accent:${d.accent}`}>
+    {
+      draft && (
+        <div class="case__draft">
+          <div class="container">
+            <span class="badge-draft">Draft</span> This case study is unpublished and only visible in preview. Replace every TODO, add assets, then set
+            <code>verified: true</code> and <code>status: published</code>.
+          </div>
+        </div>
+      )
+    }
+
+    <header class="case__head">
+      <div class="case__aura" aria-hidden="true"></div>
+      <div class="container">
+        <a href="/work" class="case__back" data-reveal>← All projects</a>
+        <p class="eyebrow" data-reveal style="--d:80">{d.category}</p>
+        <h1 class="case__title" data-split>
+          <span class="line-mask"><span>{d.title}</span></span>
+        </h1>
+        <p class="case__tagline" data-reveal style="--d:250">{d.tagline}</p>
+
+        <div class="case__meta" data-reveal style="--d:350">
+          {meta.map((m) => <div><dt>{m.k}</dt><dd>{m.v}</dd></div>)}
+          {d.stack.length > 0 && <div><dt>Stack</dt><dd>{d.stack.join(' · ')}</dd></div>}
+        </div>
+
+        {
+          links.length > 0 && (
+            <div class="case__links" data-reveal style="--d:420">
+              {links.map((l, i) => (
+                <a class={i === 0 ? 'btn' : 'btn btn--ghost'} href={l.v} target="_blank" rel="noopener noreferrer">
+                  {l.k} <span class="arrow" aria-hidden="true">→</span>
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="container">
+      {
+        d.cover ? (
+          <figure class="case__cover" data-reveal>
+            <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[800, 1400, 2000]} sizes="(min-width: 1320px) 1272px, 100vw" loading="eager" />
+          </figure>
+        ) : (
+          <div class="case__cover case__cover--empty" data-reveal aria-hidden="true">
+            <span class="card__initials">{initials(d.title)}</span>
+            <span class="card__pending">Screenshots &amp; video coming soon</span>
+          </div>
+        )
+      }
+
+      <div class="case__layout">
+        <aside class="case__summary" data-reveal>
+          <p class="eyebrow">Summary</p>
+          <p>{d.summary}</p>
+          {
+            d.outcomes.length > 0 && (
+              <dl class="case__outcomes">
+                {d.outcomes.map((o) => (
+                  <div>
+                    <dd>{o.value}</dd>
+                    <dt>{o.label}</dt>
+                  </div>
+                ))}
+              </dl>
+            )
+          }
+          {d.tags.length > 0 && <ul class="case__tags">{d.tags.map((t) => <li class="chip">{t}</li>)}</ul>}
+        </aside>
+
+        <div class="prose" data-reveal style="--d:120">
+          <Content />
+        </div>
+      </div>
+
+      {
+        d.video && (
+          <figure class="case__video" data-reveal>
+            <video src={d.video.src} poster={d.video.poster} controls playsinline preload="metadata" />
+            {d.video.caption && <figcaption>{d.video.caption}</figcaption>}
+          </figure>
+        )
+      }
+
+      {
+        d.gallery.length > 0 && (
+          <div class="case__gallery">
+            {d.gallery.map((g, i) => (
+              <figure data-reveal style={`--d:${(i % 2) * 120}`}>
+                <Image src={g.src} alt={g.alt} widths={[640, 1200]} sizes="(min-width: 900px) 50vw, 100vw" />
+                {g.caption && <figcaption>{g.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        )
+      }
+
+      {draft && !hasMedia && <p class="case__missing">Missing assets: cover image, gallery screenshots, optional demo video, live link.</p>}
+    </div>
+
+    {
+      next && next.id !== project.id && (
+        <a href={`/work/${next.id}`} class="case__next" data-cursor="view">
+          <div class="container">
+            <span class="eyebrow">Next project</span>
+            <span class="case__next-title">
+              {next.data.title} <span class="arrow" aria-hidden="true">→</span>
+            </span>
+          </div>
+        </a>
+      )
+    }
+  </article>
+</BaseLayout>

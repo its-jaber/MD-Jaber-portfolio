@@ -1,0 +1,68 @@
+---
+import { site } from '../config/site';
+const path = Astro.url.pathname;
+const links = [
+  { href: '/work', label: 'Work' },
+  { href: '/#about', label: 'About' },
+  { href: '/#services', label: 'Services' },
+  { href: '/#contact', label: 'Contact' },
+];
+---
+
+<header class="nav" transition:persist="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo" aria-label={`${site.name}, home`}>
+      <span class="nav__mark" aria-hidden="true">J</span>
+      <span class="nav__name">{site.name}</span>
+    </a>
+
+    <nav aria-label="Primary">
+      <ul class="nav__links" id="nav-links">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={l.href === '/work' && path.startsWith('/work') ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="nav__cta" href="/#contact">
+      {site.availableForWork && <span class="dot" aria-hidden="true" />}
+      Let’s talk
+    </a>
+
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  function setupNav() {
+    const nav = document.querySelector<HTMLElement>('.nav');
+    const btn = nav?.querySelector<HTMLButtonElement>('.nav__toggle');
+    // The nav persists across view transitions, so refresh the current-page marker each load.
+    nav?.querySelectorAll<HTMLAnchorElement>('.nav__links a').forEach((a) => {
+      const on = a.pathname === '/work' && location.pathname.startsWith('/work');
+      if (on) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    if (!nav || !btn || btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    const set = (open: boolean) => {
+      nav.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    btn.addEventListener('click', () => set(!nav.classList.contains('is-open')));
+    nav.querySelectorAll('.nav__links a').forEach((a) => a.addEventListener('click', () => set(false)));
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && set(false));
+    document.addEventListener('astro:after-swap', () => set(false));
+  }
+  document.addEventListener('astro:page-load', setupNav);
+</script>

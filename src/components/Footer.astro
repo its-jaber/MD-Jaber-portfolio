@@ -1,0 +1,21 @@
+---
+import { site } from '../config/site';
+const socials = site.socials.filter((s) => s.url);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <a href="/" class="footer__big" aria-label="Back to home">
+      <span>Md</span><em class="serif">Jaber</em>
+    </a>
+    <div class="footer__row">
+      <p class="muted">© {year} {site.name}. Built with care and AI-assisted tooling.</p>
+      <ul class="footer__links">
+        <li><a href={`mailto:${site.email}`}>Email</a></li>
+        {socials.map((s) => <li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a></li>)}
+        <li><a href="#main" class="footer__top">Back to top ↑</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectExplorer from '../../components/react/ProjectExplorer';
+import { categories } from '../../content.config';
+import { getProjects, toCard, showDrafts } from '../../lib/projects';
+
+const projects = await getProjects();
+const cards = await Promise.all(projects.map(toCard));
+const drafts = cards.filter((c) => c.draft).length;
+---
+
+<BaseLayout title="Work" description="Project Explorer: products, websites and automation work by Md Jaber.">
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow" data-reveal>Project Explorer</p>
+      <h1 class="page-head__title" data-split>
+        <span class="line-mask"><span style="--i:0">Things I’ve</span></span>
+        <span class="line-mask"><span style="--i:1"><em class="serif accent">designed & built.</em></span></span>
+      </h1>
+      <p class="page-head__lead" data-reveal style="--d:250">
+        Filter by type or search by tool. Each project opens a case study covering the problem, the build and the result.
+      </p>
+      {
+        showDrafts && drafts > 0 && (
+          <p class="draft-note" data-reveal style="--d:350">
+            <span class="badge-draft">Preview</span> Showing {drafts} draft {drafts === 1 ? 'project' : 'projects'}. Drafts are never part of the production build.
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <ProjectExplorer client:load projects={cards} categories={categories} />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Not found" noindex>
+  <section class="page-head page-head--center">
+    <div class="container">
+      <p class="eyebrow" data-reveal>404</p>
+      <h1 class="page-head__title" data-split>
+        <span class="line-mask"><span>This page <em class="serif accent">doesn’t exist.</em></span></span>
+      </h1>
+      <p class="page-head__lead" data-reveal style="--d:200">It may have moved, or it was never published.</p>
+      <div data-reveal style="--d:300"><a class="btn" href="/">Back home <span class="arrow" aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+</BaseLayout>
