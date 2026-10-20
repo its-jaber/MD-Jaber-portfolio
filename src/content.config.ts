@@ -57,6 +57,11 @@ const projects = defineCollection({
         order: z.number().default(100),
         cover: z.string().optional(),
         coverAlt: z.string().optional(),
+        /**
+         * Display-only crop in px [top, right, bottom, left] to hide a capture tool's border
+         * (e.g. browser device-mode chrome). The file is untouched; remaining pixels show 1:1.
+         */
+        coverTrim: z.tuple([z.number(), z.number(), z.number(), z.number()]).optional(),
         gallery: z
           .array(
             z.object({

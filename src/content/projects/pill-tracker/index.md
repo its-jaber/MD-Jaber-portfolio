@@ -18,6 +18,7 @@ order: 5
 # Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
 cover: ../../../../asset-inbox/ui-prototypes/pill-tracker-mobile-screen.png
 coverAlt: "Mobile “Today” screen of the Pill Tracker prototype: greeting, Pro trial banner, a teal progress card showing 0 of 0 medicines taken, a search field, an “All caught up!” message and a bottom bar with Today, Upcoming, Calendar and History tabs."
+coverTrim: [9, 13, 9, 23]   # hides the capture tool's grey border (display only)
 ---
 
 ## Overview

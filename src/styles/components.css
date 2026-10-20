@@ -458,34 +458,104 @@
 }
 .lb__stage--tall { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) transparent; }
 
-/* Narrow native captures (e.g. 330px-wide full-page or phone screenshots): shown at real
-   size, centred over the canvas, never stretched or upscaled. */
+/* ==========================================================================
+   Narrow native captures (≈300–450px wide). Shown at real size or smaller, never
+   enlarged. `page` = slim full-page web capture, `phone` = app screen in a bezel.
+   ========================================================================== */
+.frame__view--narrow { display: flex; justify-content: center; align-items: flex-start; }
+.frame__view--narrow .frame__canvas { position: absolute; inset: 0; }
 .frame__view--narrow .frame__canvas::before { display: none; }
-.frame__view--narrow img.is-narrow, .frame__view--narrow .zoom img {
-  position: relative; display: block; width: 100%; height: auto; margin: 14px auto 0; object-fit: initial;
-  border-radius: 10px 10px 0 0; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+/* Card: slim page rises from the bottom of the stage */
+.frame__view--narrow[data-display='page'] img.is-narrow {
+  position: relative; display: block; width: 100%; max-width: min(78%, var(--native, 100%)); height: auto; margin-top: 18px;
+  border-radius: 8px 8px 0 0; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform 0.8s var(--ease);
 }
-.card:hover .frame__view--narrow img.is-narrow { transform: translateY(-6px); }
-.frame__view--narrow img.is-narrow { transition: transform 0.8s var(--ease); }
-.case__cover--narrow { aspect-ratio: auto; overflow: visible; border: 0; background: none; }
-.case__cover--narrow .frame { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
-.case__cover--narrow .frame__view { display: flex; justify-content: center; padding: clamp(20px, 4vw, 48px) 16px 0; }
-.case__cover--narrow .frame__canvas { position: absolute; inset: 0; }
-.preview { position: relative; width: 100%; display: flex; justify-content: center; }
-.preview img { width: 100%; height: auto; border-radius: 14px 14px 0 0; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08); }
-.case__cover--narrow:not(.is-scroll) .frame__view { padding-bottom: clamp(20px, 4vw, 48px); }
-.case__cover--narrow:not(.is-scroll) .preview img { border-radius: 22px; }
-.is-scroll .preview { display: block; height: min(72vh, 760px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) transparent; }
-.is-scroll .preview img { margin-inline: auto; }
-.is-scroll .preview:focus-visible { outline-offset: -3px; }
-/* Touch: no nested scrolling inside the page; show the top of the capture and open fullscreen to read it all. */
+.card:hover .frame__view--narrow[data-display='page'] img.is-narrow { transform: translateY(-8px); }
+
+/* Phone bezel (cards + case page). The island sits in the bezel, never over the screenshot. */
+.device-phone {
+  position: relative; display: flex; flex-direction: column; align-items: center; flex: none;
+  width: max-content; max-width: 100%; padding: 22px 7px 7px; border-radius: 34px;
+  background: linear-gradient(160deg, #1d1d22, #0b0b0e 60%);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+.device-phone__island { position: absolute; top: 8px; left: 50%; translate: -50% 0; width: 56px; height: 7px; border-radius: 99px; background: #000; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.device-phone img { display: block; width: 100%; height: auto; border-radius: 26px; }
+.frame__view--narrow[data-display='phone'] .device-phone { margin-top: 18px; max-width: min(62%, 260px); transition: transform 0.8s var(--ease); }
+.card:hover .frame__view--narrow[data-display='phone'] .device-phone { transform: translateY(-8px); }
+
+/* The 2-column feature slot is only for wide captures; narrow ones keep the regular card size. */
+.explorer__grid--full > li:first-child:has(.frame__view--narrow) { grid-column: auto; }
+.explorer__grid--full > li:first-child:has(.frame__view--narrow) .card__media { aspect-ratio: 16 / 10; }
+
+/* Case page showcase: device on an accent stage + an info panel, instead of a huge empty frame. */
+.showcase {
+  margin: 0; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); align-items: stretch;
+  border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--bg-2);
+}
+.showcase__stage { position: relative; display: flex; justify-content: center; align-items: flex-start; padding: clamp(24px, 4vw, 48px) clamp(16px, 3vw, 40px) 0; min-width: 0; }
+.showcase[data-display='phone'] .showcase__stage { align-items: center; padding-bottom: clamp(24px, 4vw, 48px); }
+.showcase__stage .frame__canvas { position: absolute; inset: 0; }
+.showcase__stage .frame__canvas::before { display: none; }
+
+.device-browser {
+  position: relative; display: flex; flex-direction: column; width: 100%; border-radius: 12px 12px 0 0; overflow: hidden;
+  background: #fff; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.device-browser__bar { flex: none; display: flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; background: #1b1b20; }
+.device-browser__bar i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); }
+.device-browser__bar span { margin-left: 8px; font-size: 0.7rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.preview { position: relative; height: min(70vh, 700px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(0, 0, 0, 0.35) transparent; cursor: zoom-in; }
+.preview img { display: block; width: 100%; height: auto; }
+.preview:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.showcase[data-display='phone'] .device-phone { cursor: zoom-in; }
+
+.showcase__info { display: flex; flex-direction: column; justify-content: center; gap: var(--space-s); padding: clamp(24px, 4vw, 48px); border-left: 1px solid var(--line); }
+.showcase__info .eyebrow { margin: 0; }
+.showcase__desc { color: var(--ink-2); font-size: var(--step-0); line-height: 1.6; max-width: 46ch; }
+.showcase__facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; font-size: var(--step--1); }
+.showcase__facts dt { color: var(--muted); }
+.showcase__facts dd { margin: 0; color: var(--ink); }
+.showcase__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.showcase__hint { color: var(--muted); font-size: var(--step--1); }
+.showcase__hint kbd { font: inherit; font-size: 0.78rem; padding: 1px 6px; border-radius: 6px; border: 1px solid var(--line-strong); color: var(--ink-2); }
+
+/* Touch: no nested scrolling; show the top of the page and open fullscreen on tap. */
 @media (pointer: coarse) {
-  .is-scroll .preview { overflow: hidden; height: min(62vh, 560px); }
-  .is-scroll .preview::after { content: ''; position: absolute; inset: auto 0 0; height: 35%; background: linear-gradient(transparent, rgba(8, 8, 10, 0.9)); pointer-events: none; }
+  .preview { overflow: hidden; height: min(58vh, 520px); }
+  .preview::after { content: ''; position: absolute; inset: auto 0 0; height: 30%; background: linear-gradient(transparent, rgba(8, 8, 10, 0.85)); pointer-events: none; }
 }
-.preview__open { position: absolute; right: 16px; bottom: 16px; z-index: 2; background: rgba(14, 14, 18, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-.preview__note { margin-top: 10px; color: var(--muted); font-size: var(--step--1); }
-@media (max-width: 600px) { .preview__open { left: 50%; right: auto; translate: -50% 0; white-space: nowrap; } }
+@media (max-width: 860px) {
+  .showcase { grid-template-columns: 1fr; }
+  .showcase__info { border-left: 0; border-top: 1px solid var(--line); padding: var(--space-m); }
+  .showcase[data-display='phone'] .device-phone { max-width: min(78%, 300px); }
+}
 .hint-touch { display: none; }
 @media (pointer: coarse) { .hint-fine { display: none; } .hint-touch { display: inline; } }
 @media (max-width: 600px) { .case__draft { font-size: 0; gap: 0; padding: 6px; } .case__draft .badge-draft { font-size: 0.75rem; } }
+
+/* Viewer chrome: title, position, thumbnails and hints */
+.lb { grid-template-rows: auto minmax(0, 1fr) auto; }
+.lb__meta { display: grid; gap: 2px; min-width: 0; }
+.lb__title { color: var(--ink); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lb__foot { display: grid; justify-items: center; gap: 10px; padding: 8px var(--gutter) 14px; }
+.lb__thumbs { display: flex; gap: 8px; max-width: 100%; overflow-x: auto; padding: 2px; scrollbar-width: none; }
+.lb__thumb { flex: none; width: 52px; height: 52px; padding: 0; border-radius: 10px; overflow: hidden; opacity: 0.5; border: 1px solid var(--line-strong); transition: opacity 0.2s, border-color 0.2s; }
+.lb__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.lb__thumb:hover, .lb__thumb.is-on { opacity: 1; border-color: var(--accent); }
+.lb__hint { color: var(--muted); font-size: var(--step--1); text-align: center; }
+.lb__stage { padding-bottom: 8px; }
+.lb__stage img { max-height: calc(100svh - 150px); }
+@media (max-width: 760px) {
+  .lb__stage { padding-bottom: 8px; }
+  .lb__stage img { max-height: calc(100svh - 190px); }
+  .lb__foot { padding-bottom: 80px; }
+}
+.lb__stage--tall img { max-height: none; }
+.trim { display: block; }
+.device-phone .trim { border-radius: 26px; }
+.device-phone .trim img { border-radius: 0; }
+.lb__trim { border-radius: 12px; flex: none; }
+.lb__trim img { max-height: none !important; border-radius: 0 !important; }

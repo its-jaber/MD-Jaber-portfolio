@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'framer-motion';
 
 export type LightboxItem = {
@@ -10,6 +10,8 @@ export type LightboxItem = {
   caption?: string;
   /** Tall full-page screenshots scroll vertically instead of being shrunk to fit. */
   tall?: boolean;
+  /** Display-only border crop: wrapper/img styles plus the trimmed size. */
+  trim?: { wrap: CSSProperties; img: CSSProperties; w: number; h: number };
 };
 
 /**
@@ -35,18 +37,35 @@ export default function Lightbox({ items, title }: { items: LightboxItem[]; titl
   );
   const close = useCallback(() => setIndex(null), []);
 
-  // Openers in the static page.
+  // Openers in the static page: click, or Enter on a focusable non-button opener (e.g. the scrollable preview).
   useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      const t = (e.target as Element).closest<HTMLElement>('[data-lightbox]');
-      if (!t) return;
-      e.preventDefault();
+    const openFrom = (t: HTMLElement) => {
       opener.current = t;
       setDir(0);
       setIndex(Number(t.dataset.lightbox) || 0);
     };
+    const onClick = (e: MouseEvent) => {
+      const t = (e.target as Element).closest<HTMLElement>('[data-lightbox]');
+      if (!t) return;
+      // Ignore clicks on a scroll container's own scrollbar.
+      const r = t.getBoundingClientRect();
+      if (t.scrollHeight > t.clientHeight && e.clientX - r.left > t.clientWidth) return;
+      e.preventDefault();
+      openFrom(t);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement;
+      if (e.key === 'Enter' && t.matches?.('[data-lightbox]:not(button)')) {
+        e.preventDefault();
+        openFrom(t);
+      }
+    };
     document.addEventListener('click', onClick);
-    return () => document.removeEventListener('click', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('click', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
   }, []);
 
   // Keyboard, scroll lock, focus handling.
@@ -96,9 +115,12 @@ export default function Lightbox({ items, title }: { items: LightboxItem[]; titl
           onClick={(e) => e.target === e.currentTarget && close()}
         >
           <div className="lb__bar">
-            <span className="lb__count" aria-live="polite">
-              {index! + 1} / {items.length}
-            </span>
+            <div className="lb__meta">
+              <span className="lb__title">{title}</span>
+              <span className="lb__count" aria-live="polite">
+                {items.length > 1 ? `${index! + 1} / ${items.length}` : item.tall ? 'Full-page screenshot' : 'Screenshot'}
+              </span>
+            </div>
             <button type="button" className="lb__close" onClick={close} aria-label="Close viewer">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
                 <path d="M6 6l12 12M18 6 6 18" />
@@ -123,10 +145,46 @@ export default function Lightbox({ items, title }: { items: LightboxItem[]; titl
               aria-label={item.tall ? 'Full-page screenshot, scroll to see all of it' : undefined}
               onClick={(e) => e.target === e.currentTarget && close()}
             >
-              <img src={item.src} srcSet={item.srcset} sizes={`min(100vw, ${item.width}px)`} width={item.width} height={item.height} alt={item.alt} draggable={false} style={{ maxWidth: `min(100%, ${item.width}px)` }} />
+              {item.trim ? (
+                <span
+                  className="trim lb__trim"
+                  style={{ ...item.trim.wrap, width: `min(100%, ${item.trim.w}px, calc((100svh - 190px) * ${item.trim.w / item.trim.h}))` }}
+                >
+                  <img src={item.src} srcSet={item.srcset} sizes={`${item.width}px`} width={item.width} height={item.height} alt={item.alt} draggable={false} style={item.trim.img} />
+                </span>
+              ) : (
+                <img src={item.src} srcSet={item.srcset} sizes={`min(100vw, ${item.width}px)`} width={item.width} height={item.height} alt={item.alt} draggable={false} style={{ maxWidth: `min(100%, ${item.width}px)` }} />
+              )}
               {item.caption && <figcaption>{item.caption}</figcaption>}
             </motion.figure>
           </AnimatePresence>
+
+          <div className="lb__foot">
+            {items.length > 1 && (
+              <div className="lb__thumbs" role="group" aria-label="Screenshots">
+                {items.map((it, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`lb__thumb${i === index ? ' is-on' : ''}`}
+                    aria-label={`Show image ${i + 1}: ${it.alt}`}
+                    aria-current={i === index ? 'true' : undefined}
+                    onClick={() => {
+                      setDir(i > index! ? 1 : -1);
+                      setIndex(i);
+                    }}
+                  >
+                    <img src={it.src} alt="" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
+            <p className="lb__hint">
+              {item.tall && <span>Scroll to see the full page · </span>}
+              <span className="hint-fine">{items.length > 1 ? '← → to switch · ' : ''}Esc to close</span>
+              <span className="hint-touch">{items.length > 1 ? 'Swipe to switch · ' : ''}Tap ✕ to close</span>
+            </p>
+          </div>
 
           {items.length > 1 && (
             <>

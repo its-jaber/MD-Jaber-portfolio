@@ -18,6 +18,7 @@ order: 4
 # Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
 cover: ../../../../asset-inbox/ui-prototypes/fitkhabar-mobile-landing.png
 coverAlt: "Mobile landing screen of the FitKhabar AI prototype: dark green background, headline “Calorie tracking made for Bangladesh”, Calories, Water and Weight tiles, and Get Started and Sign In buttons."
+coverTrim: [2, 0, 0, 0]   # hides the capture tool's grey border (display only)
 ---
 
 ## Overview

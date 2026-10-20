@@ -18,10 +18,21 @@ export type CardProject = {
   /** "Concept", "UI prototype"… always shown so concept work is clearly labelled. */
   stage?: string;
   /** narrow = small native capture: shown at real size, never upscaled. */
-  cover?: { src: string; srcset?: string; width: number; height: number; alt: string; narrow?: boolean };
+  cover?: {
+    src: string;
+    srcset?: string;
+    width: number;
+    height: number;
+    alt: string;
+    narrow?: boolean;
+    display?: 'wide' | 'phone' | 'page';
+    /** Display-only border crop (see trimStyles). */
+    trim?: { wrap: React.CSSProperties; img: React.CSSProperties };
+  };
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
 // Replays on every viewport entry (viewport.once = false). Framer only resets
 // once the card has fully left the viewport, so cards never flicker while read.
 const reveal: Variants = {
@@ -76,8 +87,12 @@ export default function ProjectCard({ project: p, index }: { project: CardProjec
       >
         <motion.div className="card__glow" style={{ background: glow }} aria-hidden />
         <div className="card__media">
-          <MediaFrame label={p.frameLabel} category={p.category} narrow={p.cover?.narrow}>
-            {p.cover && (
+          <MediaFrame label={p.frameLabel} category={p.category} narrow={p.cover?.narrow} display={p.cover?.display}>
+            {p.cover?.trim ? (
+              <span className="trim" style={p.cover.trim.wrap}>
+                <img src={p.cover.src} srcSet={p.cover.srcset} sizes={`${p.cover.width}px`} width={p.cover.width} height={p.cover.height} alt={p.cover.alt} style={p.cover.trim.img} loading="lazy" decoding="async" />
+              </span>
+            ) : p.cover && (
               <img
                 src={p.cover.src}
                 srcSet={p.cover.srcset}
@@ -86,7 +101,7 @@ export default function ProjectCard({ project: p, index }: { project: CardProjec
                 height={p.cover.height}
                 alt={p.cover.alt}
                 className={p.cover.narrow ? 'is-narrow' : undefined}
-                style={p.cover.narrow ? { maxWidth: p.cover.width } : undefined}
+                style={p.cover.narrow ? ({ ['--native' as string]: `${p.cover.width}px` } as React.CSSProperties) : undefined}
                 loading="lazy"
                 decoding="async"
               />

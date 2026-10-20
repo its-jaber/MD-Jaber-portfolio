@@ -1,4 +1,5 @@
 import { getImage } from 'astro:assets';
+import type { CSSProperties } from 'react';
 import type { CardProject } from '../components/react/ProjectCard';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { stageLabels } from '../content.config';
@@ -48,6 +49,31 @@ export async function resolveImage(p: Project, path?: string): Promise<ImageMeta
 
 /** Screenshots under this width are shown at native size, never upscaled. */
 export const NARROW = 800;
+
+/**
+ * How a screenshot is presented: `wide` = normal desktop capture (fills the frame),
+ * `phone` = app screen (phone bezel), `page` = narrow full-page web capture (slim browser window).
+ */
+export type Display = 'wide' | 'phone' | 'page';
+export const displayOf = (img: { width: number; height: number }): Display =>
+  img.width >= NARROW ? 'wide' : img.height / img.width <= 2.4 ? 'phone' : 'page';
+
+export type Trim = [number, number, number, number];
+
+/**
+ * Inline styles that crop `trim` px off each edge of an image without resampling it:
+ * a wrapper with the trimmed aspect ratio, and the image offset inside it.
+ */
+export function trimStyles(img: { width: number; height: number }, trim?: Trim): { wrap: CSSProperties; img: CSSProperties } | undefined {
+  if (!trim || trim.every((n) => !n)) return undefined;
+  const [t, r, b, l] = trim;
+  const w = img.width - l - r;
+  const h = img.height - t - b;
+  return {
+    wrap: { position: 'relative', overflow: 'hidden', aspectRatio: `${w} / ${h}`, width: `${w}px`, maxWidth: '100%' },
+    img: { position: 'absolute', maxWidth: 'none', width: `${(img.width / w) * 100}%`, left: `${(-l / w) * 100}%`, top: `${(-t / h) * 100}%` },
+  };
+}
 
 /** Responsive widths that never exceed the source image. */
 export const widthsFor = (img: ImageMetadata, want: number[]) => {
@@ -118,6 +144,8 @@ export async function toCard(p: Project): Promise<CardProject> {
       height: src.height,
       alt: d.coverAlt ?? '',
       narrow: src.width < NARROW,
+      display: displayOf(src),
+      trim: trimStyles(src, d.coverTrim as Trim | undefined),
     };
   }
   return {

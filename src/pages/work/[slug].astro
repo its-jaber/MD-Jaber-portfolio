@@ -5,7 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import MediaFrame from '../../components/MediaFrame.astro';
 import Lightbox, { type LightboxItem } from '../../components/react/Lightbox';
 import { stageLabels } from '../../content.config';
-import { getProjects, isDraft, clean, frameLabel, draftHtmlWithSlots, resolveImage, widthsFor, NARROW, type Project } from '../../lib/projects';
+import { getProjects, isDraft, clean, frameLabel, draftHtmlWithSlots, resolveImage, widthsFor, displayOf, trimStyles, NARROW, type Project, type Trim } from '../../lib/projects';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -58,11 +58,17 @@ const shots: Shot[] = [...(coverImg ? [{ src: coverImg, alt: d.coverAlt ?? '' }]
 const viewer: LightboxItem[] = await Promise.all(
   shots.map(async (g) => {
     const full = await getImage({ src: g.src, widths: widthsFor(g.src, [1080, 1600, 2400]), format: 'webp' });
-    return { src: full.src, srcset: full.srcSet.attribute, width: g.src.width, height: g.src.height, alt: g.alt, caption: g.caption, tall: isTall(g) };
+    const trim = g.src === coverImg ? trimStyles(g.src, d.coverTrim as Trim | undefined) : undefined;
+    const t = (d.coverTrim ?? [0, 0, 0, 0]) as Trim;
+    return {
+      src: full.src, srcset: full.srcSet.attribute, width: g.src.width, height: g.src.height, alt: g.alt, caption: g.caption, tall: isTall(g),
+      trim: trim && { ...trim, w: g.src.width - t[1] - t[3], h: g.src.height - t[0] - t[2] },
+    };
   }),
 );
 const coverNarrow = coverImg ? coverImg.width < NARROW : false;
-const coverScrolls = coverImg ? coverNarrow && coverImg.height / coverImg.width > 2.6 : false;
+const coverDisplay = coverImg ? displayOf(coverImg) : 'wide';
+const coverTrim = coverImg ? trimStyles(coverImg, d.coverTrim as Trim | undefined) : undefined;
 const galleryStart = coverImg ? 1 : 0;
 ---
 
@@ -111,16 +117,61 @@ const galleryStart = coverImg ? 1 : 0;
     <div class="container">
       {
         coverImg && coverNarrow ? (
-          <figure class:list={['case__cover', 'case__cover--narrow', { 'is-scroll': coverScrolls }]} data-reveal>
-            <MediaFrame label={label} category={d.category} narrow>
-              <div class="preview" tabindex={coverScrolls ? '0' : undefined} aria-label={coverScrolls ? 'Scrollable full-page screenshot' : undefined}>
-                <Image src={coverImg} alt={d.coverAlt ?? ''} widths={[coverImg.width]} sizes={`${coverImg.width}px`} loading="eager" fetchpriority="high" style={`max-width:${coverImg.width}px`} />
+          <figure class="showcase case__cover-area" data-display={coverDisplay} data-reveal>
+            <div class="showcase__stage">
+              <div class="frame__canvas" aria-hidden="true"></div>
+              {
+                coverDisplay === 'page' ? (
+                  <div class="device-browser" style={`max-width:${coverImg.width}px`}>
+                    <div class="device-browser__bar" aria-hidden="true"><i></i><i></i><i></i><span>{label}</span></div>
+                    <div class="preview" data-lightbox="0" tabindex="0" aria-label="Scrollable full-page screenshot. Press Enter to open it fullscreen.">
+                      <Image src={coverImg} alt={d.coverAlt ?? ''} widths={[coverImg.width]} sizes={`${coverImg.width}px`} loading="eager" fetchpriority="high" />
+                    </div>
+                  </div>
+                ) : (
+                  <div class="device-phone" data-lightbox="0">
+                    <span class="device-phone__island" aria-hidden="true"></span>
+                    {
+                      coverTrim ? (
+                        <span class="trim" style={coverTrim.wrap}>
+                          <Image src={coverImg} alt={d.coverAlt ?? ''} widths={[coverImg.width]} sizes={`${coverImg.width}px`} loading="eager" fetchpriority="high" style={coverTrim.img} />
+                        </span>
+                      ) : (
+                        <Image src={coverImg} alt={d.coverAlt ?? ''} widths={[coverImg.width]} sizes={`${coverImg.width}px`} loading="eager" fetchpriority="high" />
+                      )
+                    }
+                  </div>
+                )
+              }
+            </div>
+            <figcaption class="showcase__info">
+              <p class="eyebrow">{coverDisplay === 'page' ? 'Full-page capture' : 'App screen'}</p>
+              {d.coverAlt && <p class="showcase__desc">{d.coverAlt}</p>}
+              <dl class="showcase__facts">
+                <dt>Original size</dt><dd>{coverImg.width} × {coverImg.height} px</dd>
+                <dt>Shown at</dt><dd>Real size, never enlarged</dd>
+              </dl>
+              <div class="showcase__actions">
+                <button type="button" class="btn" data-lightbox="0">
+                  View fullscreen <span class="arrow" aria-hidden="true">↗</span>
+                </button>
               </div>
-              <button type="button" class="preview__open btn btn--ghost" data-lightbox="0" aria-label={`Open full screenshot: ${d.coverAlt ?? d.title}`}>
-                {coverScrolls ? 'Open full page' : 'View fullscreen'} <span class="arrow" aria-hidden="true">↗</span>
-              </button>
-            </MediaFrame>
-            <figcaption class="preview__note">{coverScrolls ? <>Real full-page capture shown at its original size.<span class="hint-fine"> Scroll inside the frame, or open it fullscreen.</span><span class="hint-touch"> Open it fullscreen to see the whole page.</span></> : 'Real screenshot shown at its original size.'}</figcaption>
+              <p class="showcase__hint">
+                {
+                  coverDisplay === 'page' ? (
+                    <>
+                      <span class="hint-fine">Scroll inside the window to explore the page, or click it to open fullscreen.</span>
+                      <span class="hint-touch">Tap the page to open it fullscreen and scroll through it.</span>
+                    </>
+                  ) : (
+                    <>
+                      <span class="hint-fine">Click the screen to view it fullscreen. <kbd>Esc</kbd> closes.</span>
+                      <span class="hint-touch">Tap the screen to view it fullscreen.</span>
+                    </>
+                  )
+                }
+              </p>
+            </figcaption>
           </figure>
         ) : (
           <figure class="case__cover" data-reveal>
