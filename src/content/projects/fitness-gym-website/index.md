@@ -1,18 +1,19 @@
 ---
-title: "Gym Website"
+title: "Fitness/Gym Website"
 tagline: "TODO: one line on what it is and who it is for"
 summary: "TODO: two or three sentences. What problem, what you built, why it matters."
 status: draft          # change to "published" only after everything below is real
 verified: false        # set to true once copy, links and assets are confirmed
 category: Website # Product | Website | Automation
-kind: "Fitness business website"
+stage: concept
+kind: "Gym website concept"
 year: ""               # e.g. "2025"
 role: "TODO: e.g. Founder, design & build"
 stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
 tags: []
 accent: "#ff3d7f"
-featured: false
-order: 6
+featured: true
+order: 1
 # client: "Only with permission"
 # cover: ./cover.jpg
 # coverAlt: "Describe the screenshot"

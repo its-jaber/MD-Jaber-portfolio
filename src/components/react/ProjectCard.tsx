@@ -15,6 +15,8 @@ export type CardProject = {
   accent: string;
   draft: boolean;
   frameLabel: string;
+  /** "Concept", "UI prototype"… always shown so concept work is clearly labelled. */
+  stage?: string;
   cover?: { src: string; srcset?: string; width: number; height: number; alt: string };
 };
 
@@ -75,7 +77,7 @@ export default function ProjectCard({ project: p, index }: { project: CardProjec
         <div className="card__media">
           <MediaFrame label={p.frameLabel} category={p.category}>
             {p.cover && (
-              <img src={p.cover.src} srcSet={p.cover.srcset} sizes="(min-width: 900px) 50vw, 100vw" width={p.cover.width} height={p.cover.height} alt={p.cover.alt} loading="lazy" decoding="async" />
+              <img src={p.cover.src} srcSet={p.cover.srcset} sizes="(min-width: 760px) 50vw, 100vw" width={p.cover.width} height={p.cover.height} alt={p.cover.alt} loading="lazy" decoding="async" />
             )}
           </MediaFrame>
         </div>
@@ -88,6 +90,7 @@ export default function ProjectCard({ project: p, index }: { project: CardProjec
           <h3 className="card__title">{p.title}</h3>
           {p.tagline && <p className="card__tagline">{p.tagline}</p>}
           <div className="card__foot">
+            {p.stage && <span className="chip chip--stage">{p.stage}</span>}
             <span className="chip">{p.category}</span>
             {p.year && <span className="chip">{p.year}</span>}
             <span className="card__go" aria-hidden>

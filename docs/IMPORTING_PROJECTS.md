@@ -12,9 +12,19 @@ public/videos/
 └── floowtix-crm.mp4   ← videos go in public/ (served as-is)
 ```
 
-Six drafts already exist: `floowtix-crm`, `bebshaflow`, `n8n-automation`,
-`doctor-website`, `plumbing-website`, `gym-website`. Every `TODO` in them is a gap
-to fill with **real** information.
+Current drafts (all unpublished):
+
+| Slug | Project | Stage label |
+|---|---|---|
+| `fitness-gym-website` | Fitness/Gym Website | Concept |
+| `wellclean-website` | WellClean Website | Concept |
+| `bebshaflow-free-kit` | BebshaFlow Free Kit (landing page) | Concept |
+| `fitkhabar-ai` | FitKhabar AI (frontend) | UI prototype |
+| `floowtix-crm` | FloowTix CRM | not set · **privacy lock on** |
+| `n8n-automation` | n8n automation case studies | not set |
+| `doctor-website`, `plumbing-website` | older placeholders | not set |
+
+Every `TODO` in them is a gap to fill with **real** information.
 
 TODO text is never shown on the site. In the dev preview, an empty field is simply
 hidden, and a `TODO` paragraph in the case study shows as a dashed "Content pending"
@@ -57,6 +67,27 @@ tags: ["CRM", "Automation"]
 ```
 
 Only add `client:` or `outcomes:` when they are real and you have permission to show them.
+
+**Stage label (required to publish).** `stage: concept | prototype | live`. It is shown on
+the card and the case study ("Concept: a design concept, not a live client project." /
+"UI prototype: frontend only…"). Override the sentence with `stageNote:` if needed.
+
+**Privacy lock.** Projects with private data in screenshots (e.g. FloowTix CRM) carry:
+
+```yaml
+privacyReview:
+  pending: true
+  note: "Check for customer names, phone numbers, emails…"
+```
+
+The build refuses to publish while `pending: true`. Blur or crop private data, then remove the block.
+
+**Screenshots.** Every cover and gallery image opens a fullscreen viewer (←/→, swipe, Esc).
+Full-page screenshots (taller than wide) are cropped to the top in the gallery with a
+"View full page" hint and scroll vertically in the viewer. Phone screenshots get narrow
+tiles automatically; force it with `device: mobile` (or `device: desktop`) on a gallery item.
+Export PNG or high-quality JPG at real size (desktop ≈1440–1920px wide); the site generates
+WebP sizes and lazy-loads them.
 
 ## 3. Write the case study
 

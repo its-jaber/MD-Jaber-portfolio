@@ -11,8 +11,8 @@ role: "TODO: e.g. Founder, design & build"
 stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
 tags: []
 accent: "#2ee6a6"
-featured: true
-order: 3
+featured: false
+order: 11
 # client: "Only with permission"
 # cover: ./cover.jpg
 # coverAlt: "Describe the screenshot"

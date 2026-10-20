@@ -26,6 +26,7 @@ const md = readFileSync(join(root, 'scripts/templates/project.md'), 'utf8')
   .replaceAll('{{TITLE}}', title.replaceAll('"', '\\"'))
   .replaceAll('{{CATEGORY}}', category)
   .replaceAll('{{KIND}}', 'TODO: e.g. Clinic website')
+  .replaceAll('{{STAGE}}', 'concept')
   .replaceAll('{{ACCENT}}', '#ff6a3d')
   .replaceAll('{{SLUG}}', slug);
 

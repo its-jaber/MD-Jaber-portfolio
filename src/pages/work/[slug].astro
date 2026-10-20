@@ -1,8 +1,10 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import MediaFrame from '../../components/MediaFrame.astro';
+import Lightbox, { type LightboxItem } from '../../components/react/Lightbox';
+import { stageLabels } from '../../content.config';
 import { getProjects, isDraft, clean, frameLabel, draftHtmlWithSlots, type Project } from '../../lib/projects';
 
 export async function getStaticPaths() {
@@ -42,6 +44,20 @@ const links = [
 ].filter((l) => l.v);
 
 const label = frameLabel(project);
+const stage = d.stage ? { ...stageLabels[d.stage], note: d.stageNote ?? stageLabels[d.stage].note } : undefined;
+
+// Screenshot set for the fullscreen viewer: cover first, then the gallery.
+type Shot = { src: ImageMetadata; alt: string; caption?: string; device?: 'desktop' | 'mobile' };
+const isMobile = (g: Shot) => g.device === 'mobile' || (!g.device && g.src.width < 900 && g.src.height / g.src.width > 1.6);
+const isTall = (g: Shot) => !isMobile(g) && g.src.height / g.src.width > 1.25;
+const shots: Shot[] = [...(d.cover ? [{ src: d.cover, alt: d.coverAlt ?? '' }] : []), ...d.gallery];
+const viewer: LightboxItem[] = await Promise.all(
+  shots.map(async (g) => {
+    const full = await getImage({ src: g.src, widths: [1080, 1600, 2400].filter((w) => w <= g.src.width).concat(g.src.width < 1080 ? [g.src.width] : []), format: 'webp' });
+    return { src: full.src, srcset: full.srcSet.attribute, width: g.src.width, height: g.src.height, alt: g.alt, caption: g.caption, tall: isTall(g) };
+  }),
+);
+const galleryStart = d.cover ? 1 : 0;
 ---
 
 <BaseLayout title={d.title} description={summary ?? d.title} noindex={draft}>
@@ -52,11 +68,12 @@ const label = frameLabel(project);
       <div class="case__aura" aria-hidden="true"></div>
       <div class="container">
         <a href="/work" class="case__back" data-reveal>← All projects</a>
-        <p class="eyebrow" data-reveal style="--d:80">{d.category}</p>
+        <p class="eyebrow" data-reveal style="--d:80">{d.category}{stage && <span class="stage-badge">{stage.label}</span>}</p>
         <h1 class="case__title" data-split>
           <span class="line-mask"><span>{d.title}</span></span>
         </h1>
         {tagline && <p class="case__tagline" data-reveal style="--d:250">{tagline}</p>}
+        {stage?.note && <p class="case__stage" data-reveal style="--d:300"><strong>{stage.label}</strong> {stage.note}</p>}
 
         {
           meta.length > 0 && (
@@ -90,7 +107,9 @@ const label = frameLabel(project);
         {
           d.cover ? (
             <MediaFrame label={label} category={d.category}>
-              <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[800, 1400, 2000]} sizes="(min-width: 1360px) 1312px, 100vw" loading="eager" />
+              <button type="button" class="zoom" data-lightbox="0" data-cursor="view" aria-label={`View full screenshot: ${d.coverAlt ?? d.title}`}>
+                <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[640, 1080, 1600, 2000].filter((w) => w <= d.cover!.width)} sizes="(min-width: 1360px) 1312px, 100vw" loading="eager" fetchpriority="high" />
+              </button>
             </MediaFrame>
           ) : (
             <MediaFrame label={label} category={d.category} />
@@ -134,12 +153,26 @@ const label = frameLabel(project);
       {
         d.gallery.length > 0 ? (
           <div class="case__gallery">
-            {d.gallery.map((g, i) => (
-              <figure data-reveal style={`--d:${(i % 2) * 120}`}>
-                <Image src={g.src} alt={g.alt} widths={[640, 1200]} sizes="(min-width: 900px) 50vw, 100vw" />
-                {g.caption && <figcaption>{g.caption}</figcaption>}
-              </figure>
-            ))}
+            {d.gallery.map((g, i) => {
+              const mobile = isMobile(g);
+              const tall = isTall(g);
+              return (
+                <figure class:list={['tile', { 'tile--mobile': mobile, 'tile--tall': tall }]} data-reveal style={`--d:${(i % 2) * 120}`}>
+                  <button type="button" class="zoom tile__btn" data-lightbox={String(galleryStart + i)} data-cursor="view" aria-label={`View full screenshot: ${g.alt}`}>
+                    <Image
+                      src={g.src}
+                      alt={g.alt}
+                      widths={(mobile ? [360, 540, 720] : [640, 960, 1280]).filter((w) => w <= g.src.width)}
+                      sizes={mobile ? '(min-width: 900px) 25vw, 50vw' : '(min-width: 900px) 50vw, 100vw'}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    {tall && <span class="tile__hint" aria-hidden="true">View full page</span>}
+                  </button>
+                  {g.caption && <figcaption>{g.caption}</figcaption>}
+                </figure>
+              );
+            })}
           </div>
         ) : (
           draft && (
@@ -154,6 +187,8 @@ const label = frameLabel(project);
         )
       }
     </div>
+
+    {viewer.length > 0 && <Lightbox client:idle items={viewer} title={d.title} />}
 
     {
       next && next.id !== project.id && (

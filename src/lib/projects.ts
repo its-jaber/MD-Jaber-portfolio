@@ -1,6 +1,7 @@
 import { getImage } from 'astro:assets';
 import type { CardProject } from '../components/react/ProjectCard';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { stageLabels } from '../content.config';
 
 export type Project = CollectionEntry<'projects'>;
 
@@ -56,7 +57,7 @@ export async function toCard(p: Project): Promise<CardProject> {
   const d = p.data;
   let cover: CardProject['cover'];
   if (d.cover) {
-    const img = await getImage({ src: d.cover, widths: [640, 960, 1400], format: 'webp' });
+    const img = await getImage({ src: d.cover, widths: [480, 800, 1200], format: 'webp' });
     cover = {
       src: img.src,
       srcset: img.srcSet.attribute,
@@ -77,6 +78,7 @@ export async function toCard(p: Project): Promise<CardProject> {
     accent: d.accent,
     draft: isDraft(p),
     frameLabel: frameLabel(p),
+    stage: d.stage ? stageLabels[d.stage].label : undefined,
     cover,
   };
 }

@@ -5,14 +5,17 @@ summary: "TODO: two or three sentences. What problem, what you built, why it mat
 status: draft          # change to "published" only after everything below is real
 verified: false        # set to true once copy, links and assets are confirmed
 category: Product # Product | Website | Automation
+privacyReview:
+  pending: true
+  note: "Check the CRM screenshot for customer names, phone numbers, emails or other private data before publishing."
 kind: "CRM product"
 year: ""               # e.g. "2025"
 role: "Founder"
 stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
 tags: []
 accent: "#ff6a3d"
-featured: true
-order: 1
+featured: false
+order: 10
 # client: "Only with permission"
 # cover: ./cover.jpg
 # coverAlt: "Describe the screenshot"

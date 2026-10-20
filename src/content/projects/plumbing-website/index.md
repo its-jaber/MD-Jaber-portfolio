@@ -12,7 +12,7 @@ stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
 tags: []
 accent: "#ffb020"
 featured: false
-order: 5
+order: 20
 # client: "Only with permission"
 # cover: ./cover.jpg
 # coverAlt: "Describe the screenshot"

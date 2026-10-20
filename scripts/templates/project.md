@@ -6,6 +6,10 @@ status: draft          # change to "published" only after everything below is re
 verified: false        # set to true once copy, links and assets are confirmed
 category: {{CATEGORY}} # Product | Website | Automation
 kind: "{{KIND}}"
+stage: {{STAGE}}           # concept | prototype | live (always shown as a label)
+# privacyReview:          # uncomment to block publishing until screenshots are checked
+#   pending: true
+#   note: "Check for customer names, phone numbers, emails"
 year: ""               # e.g. "2025"
 role: "TODO: e.g. Founder, design & build"
 stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
@@ -20,6 +24,7 @@ order: 100
 #   - src: ./screen-1.jpg
 #     alt: "Dashboard overview"
 #     caption: "Optional caption"
+#     device: mobile          # optional: desktop | mobile (auto-detected)
 # video:
 #   src: /videos/{{SLUG}}.mp4   # file placed in public/videos/
 #   poster: /videos/{{SLUG}}-poster.jpg

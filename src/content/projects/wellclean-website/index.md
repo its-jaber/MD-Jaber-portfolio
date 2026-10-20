@@ -1,16 +1,20 @@
 ---
-title: "BebshaFlow"
+title: "WellClean Website"
 tagline: "TODO: one line on what it is and who it is for"
 summary: "TODO: two or three sentences. What problem, what you built, why it matters."
 status: draft          # change to "published" only after everything below is real
 verified: false        # set to true once copy, links and assets are confirmed
-category: Product # Product | Website | Automation
-kind: "Business software"
+category: Website # Product | Website | Automation
+kind: "Website concept"
+stage: concept
+# privacyReview:          # uncomment to block publishing until screenshots are checked
+#   pending: true
+#   note: "Check for customer names, phone numbers, emails"
 year: ""               # e.g. "2025"
 role: "TODO: e.g. Founder, design & build"
 stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
 tags: []
-accent: "#7c5cff"
+accent: "#3dd6c4"
 featured: true
 order: 2
 # client: "Only with permission"
@@ -20,9 +24,10 @@ order: 2
 #   - src: ./screen-1.jpg
 #     alt: "Dashboard overview"
 #     caption: "Optional caption"
+#     device: mobile          # optional: desktop | mobile (auto-detected)
 # video:
-#   src: /videos/bebshaflow.mp4   # file placed in public/videos/
-#   poster: /videos/bebshaflow-poster.jpg
+#   src: /videos/wellclean-website.mp4   # file placed in public/videos/
+#   poster: /videos/wellclean-website-poster.jpg
 # links:
 #   live: https://...
 #   repo: https://...
