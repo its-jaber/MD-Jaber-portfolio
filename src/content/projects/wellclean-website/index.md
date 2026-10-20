@@ -1,58 +1,41 @@
 ---
 title: "WellClean Website"
-tagline: "TODO: one line on what it is and who it is for"
-summary: "TODO: two or three sentences. What problem, what you built, why it matters."
-status: draft          # change to "published" only after everything below is real
-verified: false        # set to true once copy, links and assets are confirmed
-category: Website # Product | Website | Automation
-kind: "Website concept"
+tagline: "A clean, trustworthy website design concept for a home-cleaning service."
+summary: "An AI-assisted website design concept for a cleaning business called WellClean, made with Lovable. The full-page design covers services, a three-step booking explainer, an about section, reviews, before-and-after photos, pricing plans, FAQs and a quote request form."
+status: draft          # change to "published" only after Jaber approves
+verified: false        # set to true once copy and assets are confirmed
+category: Website
 stage: concept
-# privacyReview:          # uncomment to block publishing until screenshots are checked
-#   pending: true
-#   note: "Check for customer names, phone numbers, emails"
-year: ""               # e.g. "2025"
-role: "TODO: e.g. Founder, design & build"
-stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
-tags: []
-accent: "#3dd6c4"
-featured: true
+stageNote: "An AI-assisted design concept made with Lovable, not a live client site. Ratings, customer counts, names, locations, photos and prices in the design are placeholder content."
+kind: "Website design concept"
+year: ""               # TODO(verify): e.g. "2026"
+role: "TODO: what you personally did (prompting, direction, editing)"
+stack: ["Lovable"]
+tags: ["Website concept", "Cleaning service", "Lead form"]
+accent: "#2f7bf6"
+featured: false
 order: 2
-# client: "Only with permission"
-# cover: ./cover.jpg
-# coverAlt: "Describe the screenshot"
-# gallery:
-#   - src: ./screen-1.jpg
-#     alt: "Dashboard overview"
-#     caption: "Optional caption"
-#     device: mobile          # optional: desktop | mobile (auto-detected)
-# video:
-#   src: /videos/wellclean-website.mp4   # file placed in public/videos/
-#   poster: /videos/wellclean-website-poster.jpg
-# links:
-#   live: https://...
-#   repo: https://...
-#   demo: https://...
-# outcomes:                  # verified results only
-#   - label: "What changed"
-#     value: "Measured result"
+# Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
+cover: ../../../../asset-inbox/design-concepts/wellclean-lovable-long.png
+coverAlt: "Full-page screenshot of the WellClean website concept: light hero with a cleaning team photo, six service cards, three booking steps, about section, reviews, before-and-after photos, three pricing plans, FAQs and a quote form."
 ---
 
 ## Overview
 
-TODO: The context. What is this, who uses it, what state is it in today?
+A website design concept for a home and office cleaning business, created with Lovable as an AI-assisted build. It uses a light, blue-accented style meant to feel calm and trustworthy.
 
-## The problem
+## What the design includes
 
-TODO: What was slow, manual, confusing or missing before?
+- A hero with a quote call to action and trust badges
+- Six service cards (residential, deep, office, move-in/move-out, post-construction, Airbnb cleaning)
+- "Why us" highlights and a three-step "how it works" section
+- An about section, customer reviews and before-and-after photos
+- Three pricing plans, an FAQ list and a quote request form
 
-## What I built
+## Status
 
-TODO: The key pieces: pages, features, workflows. Only list what really exists.
+This is a design concept, not a site for a real cleaning company. The ratings, customer numbers, team photos, reviews, prices and contact details shown are placeholder design content.
 
-## Process
+## My role
 
-TODO: How you approached it, including where AI tools helped and where you made the calls.
-
-## Result
-
-TODO: What is true now. Use real numbers only if you measured them; otherwise describe the change.
+TODO: Describe what you did yourself (brief, prompts, edits, decisions) and what the AI tool generated.

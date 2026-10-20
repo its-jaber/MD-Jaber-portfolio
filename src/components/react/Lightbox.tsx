@@ -123,7 +123,7 @@ export default function Lightbox({ items, title }: { items: LightboxItem[]; titl
               aria-label={item.tall ? 'Full-page screenshot, scroll to see all of it' : undefined}
               onClick={(e) => e.target === e.currentTarget && close()}
             >
-              <img src={item.src} srcSet={item.srcset} sizes="100vw" width={item.width} height={item.height} alt={item.alt} draggable={false} />
+              <img src={item.src} srcSet={item.srcset} sizes={`min(100vw, ${item.width}px)`} width={item.width} height={item.height} alt={item.alt} draggable={false} style={{ maxWidth: `min(100%, ${item.width}px)` }} />
               {item.caption && <figcaption>{item.caption}</figcaption>}
             </motion.figure>
           </AnimatePresence>

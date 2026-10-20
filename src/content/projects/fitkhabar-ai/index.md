@@ -1,58 +1,40 @@
 ---
 title: "FitKhabar AI"
-tagline: "TODO: one line on what it is and who it is for"
-summary: "TODO: two or three sentences. What problem, what you built, why it matters."
-status: draft          # change to "published" only after everything below is real
-verified: false        # set to true once copy, links and assets are confirmed
-category: Product # Product | Website | Automation
-kind: "Frontend UI prototype"
+tagline: "A mobile UI prototype for a Bangladesh-first calorie tracker."
+summary: "A frontend UI prototype for FitKhabar AI, a calorie-tracking app idea built around Bangladeshi food. The screen shown is the mobile landing view, introducing calorie, water and weight tracking with sign-up and sign-in entry points."
+status: draft          # change to "published" only after Jaber approves
+verified: false        # set to true once copy and assets are confirmed
+category: Product
 stage: prototype
-# privacyReview:          # uncomment to block publishing until screenshots are checked
-#   pending: true
-#   note: "Check for customer names, phone numbers, emails"
-year: ""               # e.g. "2025"
-role: "TODO: e.g. Founder, design & build"
-stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
-tags: []
-accent: "#9be15d"
+stageNote: "Frontend only. The screen shows the interface; calorie, water and weight tracking are not confirmed as working features."
+kind: "Frontend UI prototype"
+year: ""               # TODO(verify): e.g. "2026"
+role: "TODO: e.g. Founder, product idea & UI direction"
+stack: []              # TODO(verify): tools used
+tags: ["Mobile UI", "Health", "Bangladesh"]
+accent: "#4ade80"
 featured: true
 order: 4
-# client: "Only with permission"
-# cover: ./cover.jpg
-# coverAlt: "Describe the screenshot"
-# gallery:
-#   - src: ./screen-1.jpg
-#     alt: "Dashboard overview"
-#     caption: "Optional caption"
-#     device: mobile          # optional: desktop | mobile (auto-detected)
-# video:
-#   src: /videos/fitkhabar-ai.mp4   # file placed in public/videos/
-#   poster: /videos/fitkhabar-ai-poster.jpg
-# links:
-#   live: https://...
-#   repo: https://...
-#   demo: https://...
-# outcomes:                  # verified results only
-#   - label: "What changed"
-#     value: "Measured result"
+# Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
+cover: ../../../../asset-inbox/ui-prototypes/fitkhabar-mobile-landing.png
+coverAlt: "Mobile landing screen of the FitKhabar AI prototype: dark green background, headline “Calorie tracking made for Bangladesh”, Calories, Water and Weight tiles, and Get Started and Sign In buttons."
 ---
 
 ## Overview
 
-TODO: The context. What is this, who uses it, what state is it in today?
+FitKhabar AI is a calorie-tracking app idea for Bangladesh, designed around local foods such as rice, dal and biryani. This prototype is the mobile landing screen.
 
-## The problem
+## What the screen shows
 
-TODO: What was slow, manual, confusing or missing before?
+- A "Bangladesh-first" headline: "Calorie tracking made for Bangladesh"
+- A short pitch about tracking Bangladeshi foods against calorie, protein and water goals
+- Three feature tiles: calories, water and weight
+- "Get started" and "Sign in" buttons
 
-## What I built
+## Status
 
-TODO: The key pieces: pages, features, workflows. Only list what really exists.
+This is a frontend UI prototype. It shows the interface only; tracking, food data and accounts are not confirmed as working.
 
-## Process
+## My role
 
-TODO: How you approached it, including where AI tools helped and where you made the calls.
-
-## Result
-
-TODO: What is true now. Use real numbers only if you measured them; otherwise describe the change.
+TODO: Describe what you did yourself and what AI tools helped with.

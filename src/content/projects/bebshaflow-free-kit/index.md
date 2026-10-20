@@ -1,54 +1,41 @@
 ---
 title: "BebshaFlow Free Kit"
-tagline: "TODO: one line on what it is and who it is for"
-summary: "TODO: two or three sentences. What problem, what you built, why it matters."
-status: draft          # change to "published" only after everything below is real
-verified: false        # set to true once copy, links and assets are confirmed
+tagline: "A landing page concept offering free business tools to online sellers in Bangladesh."
+summary: "A landing page concept for the BebshaFlow Free Kit: a set of free resources for small online sellers, including a profit calculator, order tracker, sales and expense tracker, AI prompt pack, growth checklist and beginner guide, with a sign-up form to receive the kit."
+status: draft          # change to "published" only after Jaber approves
+verified: false        # set to true once copy and assets are confirmed
 category: Website
 stage: concept
+stageNote: "A landing page concept for the free kit. It is not the BebshaFlow business-management app, and the tools listed are not shown working here."
 kind: "Landing page concept"
-year: ""               # e.g. "2025"
-role: "TODO: e.g. Founder, design & build"
-stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
-tags: []
-accent: "#7c5cff"
+year: ""               # TODO(verify): e.g. "2026"
+role: "TODO: e.g. Founder, concept & copy"
+stack: []              # TODO(verify): tools used to make the page
+tags: ["Landing page", "Online sellers", "Bangladesh"]
+accent: "#c8461f"
 featured: true
 order: 3
-# client: "Only with permission"
-# cover: ./cover.jpg
-# coverAlt: "Describe the screenshot"
-# gallery:
-#   - src: ./screen-1.jpg
-#     alt: "Dashboard overview"
-#     caption: "Optional caption"
-# video:
-#   src: /videos/bebshaflow.mp4   # file placed in public/videos/
-#   poster: /videos/bebshaflow-poster.jpg
-# links:
-#   live: https://...
-#   repo: https://...
-#   demo: https://...
-# outcomes:                  # verified results only
-#   - label: "What changed"
-#     value: "Measured result"
+# Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
+cover: ../../../../asset-inbox/design-concepts/bebshaflow-free-kit-landing-long.png
+coverAlt: "Full-page screenshot of the BebshaFlow Free Kit landing page: headline “Know your numbers. Understand your profit. Grow with confidence.”, a featured profit calculator, five more kit items, a “No catch, honestly” section and a sign-up form."
 ---
 
 ## Overview
 
-TODO: The context. What is this, who uses it, what state is it in today?
+A landing page concept for the BebshaFlow Free Kit, aimed at Bangladesh's small online sellers. The page offers practical free resources and asks for a name and WhatsApp number to send the kit.
 
-## The problem
+## What the page includes
 
-TODO: What was slow, manual, confusing or missing before?
+- A headline focused on understanding profit, with a "Get the free kit" call to action
+- A featured profit calculator, plus an order tracker, a sales and expense tracker, an AI prompt pack, a growth checklist and a beginner guide
+- A "No catch, honestly" section explaining why the kit is free
+- A sign-up form (name, WhatsApp number, optional email, business type)
+- A closing call to try BebshaFlow
 
-## What I built
+## Status
 
-TODO: The key pieces: pages, features, workflows. Only list what really exists.
+This is the landing page for the free kit, not the BebshaFlow product dashboard. The form's example name and phone number are placeholder text.
 
-## Process
+## My role
 
-TODO: How you approached it, including where AI tools helped and where you made the calls.
-
-## Result
-
-TODO: What is true now. Use real numbers only if you measured them; otherwise describe the change.
+TODO: Describe what you did yourself and what AI tools helped with.

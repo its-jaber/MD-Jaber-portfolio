@@ -5,15 +5,18 @@ import { glyphs } from '../lib/glyphs';
 interface Props {
   label: string;
   category: string;
+  /** Small native capture shown at real size over the canvas. */
+  narrow?: boolean;
 }
-const { label, category } = Astro.props;
+const { label, category, narrow = false } = Astro.props;
 const paths = glyphs[category] ?? glyphs.Website!;
 const hasMedia = Astro.slots.has('default');
 ---
 
 <div class="frame">
   <div class="frame__bar" aria-hidden="true"><i></i><i></i><i></i><span class="frame__url">{label}</span></div>
-  <div class="frame__view">
+  <div class:list={['frame__view', { 'frame__view--narrow': narrow }]}>
+    {narrow && <div class="frame__canvas" aria-hidden="true" />}
     {
       hasMedia ? (
         <slot />

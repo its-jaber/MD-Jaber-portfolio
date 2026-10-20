@@ -16,10 +16,11 @@ Current drafts (all unpublished):
 
 | Slug | Project | Stage label |
 |---|---|---|
-| `fitness-gym-website` | Fitness/Gym Website | Concept |
-| `wellclean-website` | WellClean Website | Concept |
-| `bebshaflow-free-kit` | BebshaFlow Free Kit (landing page) | Concept |
-| `fitkhabar-ai` | FitKhabar AI (frontend) | UI prototype |
+| `fitness-gym-website` | Fitness/Gym Website | Concept · screenshot in inbox |
+| `wellclean-website` | WellClean Website | Concept · screenshot in inbox |
+| `bebshaflow-free-kit` | BebshaFlow Free Kit (landing page) | Concept · screenshot in inbox |
+| `fitkhabar-ai` | FitKhabar AI (frontend) | UI prototype · screenshot in inbox |
+| `pill-tracker` | Pill Tracker | UI prototype (functionality unverified) · screenshot in inbox |
 | `floowtix-crm` | FloowTix CRM | not set · **privacy lock on** |
 | `n8n-automation` | n8n automation case studies | not set |
 | `doctor-website`, `plumbing-website` | older placeholders | not set |
@@ -31,6 +32,26 @@ hidden, and a `TODO` paragraph in the case study shows as a dashed "Content pend
 slot. Every visual sits in a browser-style frame: without a screenshot it shows an
 abstract category graphic, and with one it frames your image, so the layout doesn't
 change when real assets arrive.
+
+## Private screenshots: `asset-inbox/`
+
+Unreviewed screenshots live in `asset-inbox/` at the repo root (same layout as the asset
+starter pack: `design-concepts/`, `ui-prototypes/`, `private-review/`). The folder is
+**git-ignored**, so it is never committed or pushed. Drafts point at it, e.g.
+
+```yaml
+cover: ../../../../asset-inbox/design-concepts/fitness-gym-lovable-long.png
+```
+
+- In `npm run dev` (and `SHOW_DRAFTS=true` previews) these images show normally.
+- A public `npm run build` never reads the inbox, so no inbox file can end up in `dist/`.
+- If the file is missing (e.g. on another computer), the card shows the abstract frame
+  instead of failing the build.
+- Publishing is refused while a project still points at `asset-inbox/`: copy the
+  approved, optimised image next to `index.md`, change the path to `./cover.png`, then publish.
+
+Screenshots narrower than 800px are shown at their real size (never stretched). Long
+full-page captures get a scrollable preview on desktop and open fullscreen on touch.
 
 ## 1. Add a new project (optional)
 

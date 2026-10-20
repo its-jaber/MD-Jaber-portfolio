@@ -14,8 +14,10 @@ export const stageLabels: Record<(typeof stages)[number], { label: string; note:
 
 /**
  * Each project lives in its own folder: src/content/projects/<slug>/index.md
- * Images/videos for that project sit next to index.md and are referenced relatively,
- * e.g. `cover: ./cover.jpg`.
+ * Image paths are plain strings, relative to index.md (e.g. `cover: ./cover.jpg`) or
+ * pointing into the private, git-ignored `asset-inbox/`. They are resolved in
+ * src/lib/projects.ts; a missing file falls back to the placeholder frame instead of
+ * breaking the build (so drafts can reference local-only screenshots safely).
  */
 const projects = defineCollection({
   loader: glob({
@@ -23,7 +25,7 @@ const projects = defineCollection({
     base: './src/content/projects',
     generateId: ({ entry }) => entry.split('/')[0],
   }),
-  schema: ({ image }) =>
+  schema: () =>
     z
       .object({
         title: z.string(),
@@ -53,12 +55,12 @@ const projects = defineCollection({
         accent: z.string().regex(/^#[0-9a-fA-F]{6}$/).default('#ff6a3d'),
         featured: z.boolean().default(false),
         order: z.number().default(100),
-        cover: image().optional(),
+        cover: z.string().optional(),
         coverAlt: z.string().optional(),
         gallery: z
           .array(
             z.object({
-              src: image(),
+              src: z.string(),
               alt: z.string(),
               caption: z.string().optional(),
               /** "mobile" shows the shot in a narrow phone-width tile. Auto-detected if omitted. */

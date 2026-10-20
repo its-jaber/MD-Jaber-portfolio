@@ -17,7 +17,8 @@ export type CardProject = {
   frameLabel: string;
   /** "Concept", "UI prototype"… always shown so concept work is clearly labelled. */
   stage?: string;
-  cover?: { src: string; srcset?: string; width: number; height: number; alt: string };
+  /** narrow = small native capture: shown at real size, never upscaled. */
+  cover?: { src: string; srcset?: string; width: number; height: number; alt: string; narrow?: boolean };
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -75,9 +76,20 @@ export default function ProjectCard({ project: p, index }: { project: CardProjec
       >
         <motion.div className="card__glow" style={{ background: glow }} aria-hidden />
         <div className="card__media">
-          <MediaFrame label={p.frameLabel} category={p.category}>
+          <MediaFrame label={p.frameLabel} category={p.category} narrow={p.cover?.narrow}>
             {p.cover && (
-              <img src={p.cover.src} srcSet={p.cover.srcset} sizes="(min-width: 760px) 50vw, 100vw" width={p.cover.width} height={p.cover.height} alt={p.cover.alt} loading="lazy" decoding="async" />
+              <img
+                src={p.cover.src}
+                srcSet={p.cover.srcset}
+                sizes={p.cover.narrow ? `${p.cover.width}px` : '(min-width: 760px) 50vw, 100vw'}
+                width={p.cover.width}
+                height={p.cover.height}
+                alt={p.cover.alt}
+                className={p.cover.narrow ? 'is-narrow' : undefined}
+                style={p.cover.narrow ? { maxWidth: p.cover.width } : undefined}
+                loading="lazy"
+                decoding="async"
+              />
             )}
           </MediaFrame>
         </div>

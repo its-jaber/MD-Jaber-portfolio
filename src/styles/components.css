@@ -457,3 +457,35 @@
   .lb__stage--tall img { max-height: none; }
 }
 .lb__stage--tall { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) transparent; }
+
+/* Narrow native captures (e.g. 330px-wide full-page or phone screenshots): shown at real
+   size, centred over the canvas, never stretched or upscaled. */
+.frame__view--narrow .frame__canvas::before { display: none; }
+.frame__view--narrow img.is-narrow, .frame__view--narrow .zoom img {
+  position: relative; display: block; width: 100%; height: auto; margin: 14px auto 0; object-fit: initial;
+  border-radius: 10px 10px 0 0; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.card:hover .frame__view--narrow img.is-narrow { transform: translateY(-6px); }
+.frame__view--narrow img.is-narrow { transition: transform 0.8s var(--ease); }
+.case__cover--narrow { aspect-ratio: auto; overflow: visible; border: 0; background: none; }
+.case__cover--narrow .frame { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+.case__cover--narrow .frame__view { display: flex; justify-content: center; padding: clamp(20px, 4vw, 48px) 16px 0; }
+.case__cover--narrow .frame__canvas { position: absolute; inset: 0; }
+.preview { position: relative; width: 100%; display: flex; justify-content: center; }
+.preview img { width: 100%; height: auto; border-radius: 14px 14px 0 0; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08); }
+.case__cover--narrow:not(.is-scroll) .frame__view { padding-bottom: clamp(20px, 4vw, 48px); }
+.case__cover--narrow:not(.is-scroll) .preview img { border-radius: 22px; }
+.is-scroll .preview { display: block; height: min(72vh, 760px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) transparent; }
+.is-scroll .preview img { margin-inline: auto; }
+.is-scroll .preview:focus-visible { outline-offset: -3px; }
+/* Touch: no nested scrolling inside the page; show the top of the capture and open fullscreen to read it all. */
+@media (pointer: coarse) {
+  .is-scroll .preview { overflow: hidden; height: min(62vh, 560px); }
+  .is-scroll .preview::after { content: ''; position: absolute; inset: auto 0 0; height: 35%; background: linear-gradient(transparent, rgba(8, 8, 10, 0.9)); pointer-events: none; }
+}
+.preview__open { position: absolute; right: 16px; bottom: 16px; z-index: 2; background: rgba(14, 14, 18, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.preview__note { margin-top: 10px; color: var(--muted); font-size: var(--step--1); }
+@media (max-width: 600px) { .preview__open { left: 50%; right: auto; translate: -50% 0; white-space: nowrap; } }
+.hint-touch { display: none; }
+@media (pointer: coarse) { .hint-fine { display: none; } .hint-touch { display: inline; } }
+@media (max-width: 600px) { .case__draft { font-size: 0; gap: 0; padding: 6px; } .case__draft .badge-draft { font-size: 0.75rem; } }

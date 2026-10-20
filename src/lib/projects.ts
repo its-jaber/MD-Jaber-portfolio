@@ -11,12 +11,64 @@ export type Project = CollectionEntry<'projects'>;
  */
 export const showDrafts = import.meta.env.DEV || import.meta.env.SHOW_DRAFTS === 'true';
 
+// Every image a project may reference: files next to index.md, plus the private asset inbox.
+// Lazy on purpose: an image is only bundled when a page that is actually built imports it,
+// so screenshots of draft projects never end up in a production build.
+// The private inbox is only visible to dev / SHOW_DRAFTS previews; in a public build this
+// branch is a compile-time `false`, so none of its files can be copied into dist/.
+type Loader = Record<string, () => Promise<{ default: ImageMetadata }>>;
+const inbox: Loader =
+  import.meta.env.DEV || import.meta.env.SHOW_DRAFTS === 'true'
+    ? import.meta.glob<{ default: ImageMetadata }>('/asset-inbox/**/*.{png,jpg,jpeg,webp,avif}')
+    : {};
+const images: Loader = {
+  ...import.meta.glob<{ default: ImageMetadata }>('/src/content/projects/**/*.{png,jpg,jpeg,webp,avif}'),
+  ...inbox,
+};
+
+const keyFor = (p: Project, path: string) => {
+  const parts = `/src/content/projects/${p.id}/${path}`.split('/');
+  const out: string[] = [];
+  for (const part of parts) {
+    if (part === '..') out.pop();
+    else if (part && part !== '.') out.push(part);
+  }
+  return '/' + out.join('/');
+};
+
+/** True if a frontmatter image path points at an existing file (does not bundle it). */
+export const imageExists = (p: Project, path?: string) => !!path && keyFor(p, path) in images;
+
+/** Resolves a frontmatter image path (relative to the project's index.md) to image metadata, or undefined if the file is absent. */
+export async function resolveImage(p: Project, path?: string): Promise<ImageMetadata | undefined> {
+  if (!path) return undefined;
+  const load = images[keyFor(p, path)];
+  return load ? (await load()).default : undefined;
+}
+
+/** Screenshots under this width are shown at native size, never upscaled. */
+export const NARROW = 800;
+
+/** Responsive widths that never exceed the source image. */
+export const widthsFor = (img: ImageMetadata, want: number[]) => {
+  const w = want.filter((x) => x < img.width);
+  return [...w, Math.min(img.width, Math.max(...want))];
+};
+
 export async function getProjects(): Promise<Project[]> {
   const all = await getCollection('projects');
 
   for (const p of all) {
-    if (p.data.status === 'published' && /TODO/.test(p.body ?? '')) {
+    if (p.data.status !== 'published') continue;
+    if (/TODO/.test(p.body ?? '')) {
       throw new Error(`Cannot publish "${p.data.title}": the case study body still contains TODO markers.`);
+    }
+    const missing = [p.data.cover, ...p.data.gallery.map((g) => g.src)].filter((x) => x && !imageExists(p, x));
+    if (missing.length) {
+      throw new Error(`Cannot publish "${p.data.title}": image file(s) not found: ${missing.join(', ')}. Published images must be committed next to index.md.`);
+    }
+    if ([p.data.cover, ...p.data.gallery.map((g) => g.src)].some((x) => x?.includes('asset-inbox'))) {
+      throw new Error(`Cannot publish "${p.data.title}": it still points at the private asset-inbox. Copy the approved, optimised image next to index.md first.`);
     }
   }
 
@@ -56,14 +108,16 @@ export function frameLabel(p: Project) {
 export async function toCard(p: Project): Promise<CardProject> {
   const d = p.data;
   let cover: CardProject['cover'];
-  if (d.cover) {
-    const img = await getImage({ src: d.cover, widths: [480, 800, 1200], format: 'webp' });
+  const src = await resolveImage(p, d.cover);
+  if (src) {
+    const img = await getImage({ src, widths: widthsFor(src, [480, 800, 1200]), format: 'webp' });
     cover = {
       src: img.src,
       srcset: img.srcSet.attribute,
-      width: d.cover.width,
-      height: d.cover.height,
+      width: src.width,
+      height: src.height,
       alt: d.coverAlt ?? '',
+      narrow: src.width < NARROW,
     };
   }
   return {

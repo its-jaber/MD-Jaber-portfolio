@@ -6,3 +6,8 @@ dist/
 !.env.example
 .DS_Store
 npm-debug.log*
+
+# Private screenshot inbox: never commit or push until reviewed and approved for publication.
+asset-inbox/
+Jaber_Portfolio_Project_Assets_Starter/
+*.zip

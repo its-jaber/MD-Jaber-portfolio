@@ -5,7 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import MediaFrame from '../../components/MediaFrame.astro';
 import Lightbox, { type LightboxItem } from '../../components/react/Lightbox';
 import { stageLabels } from '../../content.config';
-import { getProjects, isDraft, clean, frameLabel, draftHtmlWithSlots, type Project } from '../../lib/projects';
+import { getProjects, isDraft, clean, frameLabel, draftHtmlWithSlots, resolveImage, widthsFor, NARROW, type Project } from '../../lib/projects';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -46,18 +46,24 @@ const links = [
 const label = frameLabel(project);
 const stage = d.stage ? { ...stageLabels[d.stage], note: d.stageNote ?? stageLabels[d.stage].note } : undefined;
 
-// Screenshot set for the fullscreen viewer: cover first, then the gallery.
+// Screenshot set for the fullscreen viewer: cover first, then the gallery. Missing files are skipped.
 type Shot = { src: ImageMetadata; alt: string; caption?: string; device?: 'desktop' | 'mobile' };
-const isMobile = (g: Shot) => g.device === 'mobile' || (!g.device && g.src.width < 900 && g.src.height / g.src.width > 1.6);
+const isMobile = (g: Shot) => g.device === 'mobile' || (!g.device && g.src.width < 900 && g.src.height / g.src.width > 1.6 && g.src.height / g.src.width < 2.6);
 const isTall = (g: Shot) => !isMobile(g) && g.src.height / g.src.width > 1.25;
-const shots: Shot[] = [...(d.cover ? [{ src: d.cover, alt: d.coverAlt ?? '' }] : []), ...d.gallery];
+const coverImg = await resolveImage(project, d.cover);
+const gallery: Shot[] = (
+  await Promise.all(d.gallery.map(async (g) => ({ ...g, src: await resolveImage(project, g.src) })))
+).filter((g): g is Shot => !!g.src);
+const shots: Shot[] = [...(coverImg ? [{ src: coverImg, alt: d.coverAlt ?? '' }] : []), ...gallery];
 const viewer: LightboxItem[] = await Promise.all(
   shots.map(async (g) => {
-    const full = await getImage({ src: g.src, widths: [1080, 1600, 2400].filter((w) => w <= g.src.width).concat(g.src.width < 1080 ? [g.src.width] : []), format: 'webp' });
+    const full = await getImage({ src: g.src, widths: widthsFor(g.src, [1080, 1600, 2400]), format: 'webp' });
     return { src: full.src, srcset: full.srcSet.attribute, width: g.src.width, height: g.src.height, alt: g.alt, caption: g.caption, tall: isTall(g) };
   }),
 );
-const galleryStart = d.cover ? 1 : 0;
+const coverNarrow = coverImg ? coverImg.width < NARROW : false;
+const coverScrolls = coverImg ? coverNarrow && coverImg.height / coverImg.width > 2.6 : false;
+const galleryStart = coverImg ? 1 : 0;
 ---
 
 <BaseLayout title={d.title} description={summary ?? d.title} noindex={draft}>
@@ -103,19 +109,35 @@ const galleryStart = d.cover ? 1 : 0;
     </header>
 
     <div class="container">
-      <figure class="case__cover" data-reveal>
-        {
-          d.cover ? (
-            <MediaFrame label={label} category={d.category}>
-              <button type="button" class="zoom" data-lightbox="0" data-cursor="view" aria-label={`View full screenshot: ${d.coverAlt ?? d.title}`}>
-                <Image src={d.cover} alt={d.coverAlt ?? ''} widths={[640, 1080, 1600, 2000].filter((w) => w <= d.cover!.width)} sizes="(min-width: 1360px) 1312px, 100vw" loading="eager" fetchpriority="high" />
+      {
+        coverImg && coverNarrow ? (
+          <figure class:list={['case__cover', 'case__cover--narrow', { 'is-scroll': coverScrolls }]} data-reveal>
+            <MediaFrame label={label} category={d.category} narrow>
+              <div class="preview" tabindex={coverScrolls ? '0' : undefined} aria-label={coverScrolls ? 'Scrollable full-page screenshot' : undefined}>
+                <Image src={coverImg} alt={d.coverAlt ?? ''} widths={[coverImg.width]} sizes={`${coverImg.width}px`} loading="eager" fetchpriority="high" style={`max-width:${coverImg.width}px`} />
+              </div>
+              <button type="button" class="preview__open btn btn--ghost" data-lightbox="0" aria-label={`Open full screenshot: ${d.coverAlt ?? d.title}`}>
+                {coverScrolls ? 'Open full page' : 'View fullscreen'} <span class="arrow" aria-hidden="true">↗</span>
               </button>
             </MediaFrame>
-          ) : (
-            <MediaFrame label={label} category={d.category} />
-          )
-        }
-      </figure>
+            <figcaption class="preview__note">{coverScrolls ? <>Real full-page capture shown at its original size.<span class="hint-fine"> Scroll inside the frame, or open it fullscreen.</span><span class="hint-touch"> Open it fullscreen to see the whole page.</span></> : 'Real screenshot shown at its original size.'}</figcaption>
+          </figure>
+        ) : (
+          <figure class="case__cover" data-reveal>
+            {
+              coverImg ? (
+                <MediaFrame label={label} category={d.category}>
+                  <button type="button" class="zoom" data-lightbox="0" data-cursor="view" aria-label={`View full screenshot: ${d.coverAlt ?? d.title}`}>
+                    <Image src={coverImg} alt={d.coverAlt ?? ''} widths={widthsFor(coverImg, [640, 1080, 1600, 2000])} sizes="(min-width: 1360px) 1312px, 100vw" loading="eager" fetchpriority="high" />
+                  </button>
+                </MediaFrame>
+              ) : (
+                <MediaFrame label={label} category={d.category} />
+              )
+            }
+          </figure>
+        )
+      }
 
       <div class="case__layout">
         <aside class="case__summary" data-reveal>
@@ -151,9 +173,9 @@ const galleryStart = d.cover ? 1 : 0;
       }
 
       {
-        d.gallery.length > 0 ? (
+        gallery.length > 0 ? (
           <div class="case__gallery">
-            {d.gallery.map((g, i) => {
+            {gallery.map((g, i) => {
               const mobile = isMobile(g);
               const tall = isTall(g);
               return (
@@ -162,7 +184,7 @@ const galleryStart = d.cover ? 1 : 0;
                     <Image
                       src={g.src}
                       alt={g.alt}
-                      widths={(mobile ? [360, 540, 720] : [640, 960, 1280]).filter((w) => w <= g.src.width)}
+                      widths={widthsFor(g.src, mobile ? [360, 540, 720] : [640, 960, 1280])}
                       sizes={mobile ? '(min-width: 900px) 25vw, 50vw' : '(min-width: 900px) 50vw, 100vw'}
                       loading="lazy"
                       decoding="async"

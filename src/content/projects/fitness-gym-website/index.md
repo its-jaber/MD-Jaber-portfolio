@@ -1,54 +1,45 @@
 ---
 title: "Fitness/Gym Website"
-tagline: "TODO: one line on what it is and who it is for"
-summary: "TODO: two or three sentences. What problem, what you built, why it matters."
-status: draft          # change to "published" only after everything below is real
-verified: false        # set to true once copy, links and assets are confirmed
-category: Website # Product | Website | Automation
+tagline: "A dark, high-energy website design concept for a gym."
+summary: "An AI-assisted website design concept for a gym, made with Lovable. The full-page design covers classes, membership plans, coaches, member stories, a gallery, location and hours, and a sign-up form."
+status: draft          # change to "published" only after Jaber approves
+verified: false        # set to true once copy and assets are confirmed
+category: Website
 stage: concept
-kind: "Gym website concept"
-year: ""               # e.g. "2025"
-role: "TODO: e.g. Founder, design & build"
-stack: []              # e.g. ["Next.js", "Supabase", "n8n"]
-tags: []
-accent: "#ff3d7f"
+stageNote: "An AI-assisted design concept made with Lovable, not a live client site. Names, prices, statistics, photos and testimonials in the design are placeholder content."
+kind: "Website design concept"
+year: ""               # TODO(verify): e.g. "2026"
+role: "TODO: what you personally did (prompting, direction, editing)"
+stack: ["Lovable"]
+tags: ["Website concept", "Fitness", "Landing page"]
+accent: "#e5383b"
 featured: true
 order: 1
-# client: "Only with permission"
-# cover: ./cover.jpg
-# coverAlt: "Describe the screenshot"
-# gallery:
-#   - src: ./screen-1.jpg
-#     alt: "Dashboard overview"
-#     caption: "Optional caption"
-# video:
-#   src: /videos/gym-website.mp4   # file placed in public/videos/
-#   poster: /videos/gym-website-poster.jpg
-# links:
-#   live: https://...
-#   repo: https://...
-#   demo: https://...
-# outcomes:                  # verified results only
-#   - label: "What changed"
-#     value: "Measured result"
+# Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
+cover: ../../../../asset-inbox/design-concepts/fitness-gym-lovable-long.png
+coverAlt: "Full-page screenshot of the Fitness/Gym website concept: dark hero with red accents, class cards, three membership plans, coach profiles, member story, gallery, location and hours, and a sign-up form."
 ---
 
 ## Overview
 
-TODO: The context. What is this, who uses it, what state is it in today?
+A website design concept for a gym, created with Lovable as an AI-assisted build. It explores a bold, dark visual style with red accents aimed at a fitness audience.
 
-## The problem
+## What the design includes
 
-TODO: What was slow, manual, confusing or missing before?
+- A full-screen hero with a "Join now" call to action
+- Class cards (weight training, cardio, yoga, CrossFit, personal training, nutrition)
+- Three membership plans with a featured middle option
+- Coach profiles, a member story and a photo gallery
+- Location, opening hours and a sign-up form
 
-## What I built
+## Status
 
-TODO: The key pieces: pages, features, workflows. Only list what really exists.
+This is a design concept, not a site built for a real client. The gym name, coaches, prices, statistics and testimonials shown are placeholder design content.
 
-## Process
+## My role
 
-TODO: How you approached it, including where AI tools helped and where you made the calls.
+TODO: Describe what you did yourself (brief, prompts, edits, decisions) and what the AI tool generated.
 
-## Result
+## What I'd do next
 
-TODO: What is true now. Use real numbers only if you measured them; otherwise describe the change.
+TODO: Optional. What would change if this became a real client project?
