@@ -63,6 +63,13 @@ npx playwright install chromium        # once per computer
 npm run capture -- https://wellclean.lovable.app/ wellclean design-concepts
 ```
 
+No download needed on Windows: add `--browser=msedge` to use the Microsoft Edge that is
+already installed (or `--browser=chrome` for Google Chrome):
+
+```bash
+npm run capture -- https://wellclean.lovable.app/ wellclean --browser=msedge
+```
+
 This saves into the git-ignored `asset-inbox/design-concepts/`:
 
 | File | What |

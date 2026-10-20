@@ -13,6 +13,9 @@
  *   <name>-capture.json       URL, time and settings, as a record of where the images came from
  *
  * First run on a new computer: npx playwright install chromium
+ * Or skip that download and use a browser that is already installed:
+ *   npm run capture -- <url> <name> --browser=msedge     (Microsoft Edge, on every Windows PC)
+ *   npm run capture -- <url> <name> --browser=chrome     (Google Chrome)
  */
 import { chromium } from 'playwright';
 import sharp from 'sharp';
@@ -20,7 +23,9 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const [url, name, folder = 'design-concepts'] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const channel = args.find((a) => a.startsWith('--browser='))?.split('=')[1];
+const [url, name, folder = 'design-concepts'] = args.filter((a) => !a.startsWith('--'));
 if (!url || !name || !/^https?:\/\//.test(url) || !/^[a-z0-9-]+$/.test(name)) {
   console.error('Usage: npm run capture -- <https://url> <kebab-name> [asset-inbox subfolder]');
   process.exit(1);
@@ -94,8 +99,11 @@ async function capturePage(page, path) {
   return { pageHeight: total, truncated: total > MAX_FULL_HEIGHT, segments: parts.length };
 }
 
-const browser = await chromium.launch();
-const record = { url, capturedAt: new Date().toISOString(), files: [] };
+const browser = await chromium.launch(channel ? { channel } : {}).catch((err) => {
+  console.error(channel ? `Could not start ${channel}: ${err.message.split('\n')[0]}` : `Could not start Chromium. Run "npx playwright install chromium", or add --browser=msedge to use Microsoft Edge.`);
+  process.exit(1);
+});
+const record = { url, capturedAt: new Date().toISOString(), browser: channel ?? 'playwright chromium', files: [] };
 try {
   // Desktop: viewport + full page
   const desk = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
