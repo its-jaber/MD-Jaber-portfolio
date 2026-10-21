@@ -29,7 +29,7 @@ export const site = {
 
   // Leave a URL empty to hide that link.
   socials: [
-    { label: 'LinkedIn', url: '' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/jaber-flowtix/' },
     { label: 'GitHub', url: '' },
     { label: 'Facebook', url: '' },
     { label: 'WhatsApp', url: '' },
