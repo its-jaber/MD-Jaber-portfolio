@@ -559,9 +559,10 @@
 .device-phone .trim img { border-radius: 0; }
 .lb__trim { border-radius: 12px; flex: none; }
 .lb__trim img { max-height: none !important; border-radius: 0 !important; }
-/* Gallery balance: a full-page capture next to a phone shot (8 + 4 columns); a lone image spans the row. */
-.case__gallery > .tile--tall { grid-column: span 8; }
-.case__gallery > .tile--mobile { grid-column: span 4; }
+/* Gallery balance: a full-page capture next to a phone shot (9 + 3 columns, so both tiles end up
+   about the same height); a lone image spans the row. */
+.case__gallery > .tile--tall { grid-column: span 9; }
+.case__gallery > .tile--mobile { grid-column: span 3; }
 .case__gallery > :only-child { grid-column: 1 / -1; }
 .case__gallery > .tile--tall:only-child .tile__btn { aspect-ratio: 21 / 9; }
 @media (max-width: 760px) {

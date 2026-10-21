@@ -24,6 +24,10 @@ gallery:
   - src: ../../../../asset-inbox/design-concepts/wellclean-full-1440.png   # authentic full-page capture, 1440×7677
     alt: "Full-page screenshot of the WellClean concept at 1440px: hero, six service cards, why-WellClean highlights, three booking steps, about section with statistics, testimonials, before-and-after photos, three pricing plans, FAQ, quote form and footer."
     caption: "Full page at 1440px. All business details, reviews and figures shown are demonstration content."
+  - src: ../../../../asset-inbox/design-concepts/wellclean-mobile-390.png   # authentic 390px mobile capture at 2× (780×1688)
+    alt: "Mobile screenshot of the WellClean concept at 390px: logo and menu button, “Booking openings this week” badge, the headline, Get Free Quote and call buttons, trust badges and the top of the team photo."
+    caption: "Mobile, 390px wide."
+    device: mobile
 ---
 
 ## Overview
