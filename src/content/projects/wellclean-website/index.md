@@ -20,6 +20,10 @@ links:
 # Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
 cover: ../../../../asset-inbox/design-concepts/wellclean-desktop-1440.png   # authentic 1440×900 capture of wellclean.lovable.app
 coverAlt: "Desktop screenshot of the WellClean concept homepage: navigation bar, the headline “A spotless home, without lifting a finger.”, Get Free Quote and call buttons, three trust badges and a photo of a uniformed cleaning team in a living room."
+gallery:
+  - src: ../../../../asset-inbox/design-concepts/wellclean-full-1440.png   # authentic full-page capture, 1440×7677
+    alt: "Full-page screenshot of the WellClean concept at 1440px: hero, six service cards, why-WellClean highlights, three booking steps, about section with statistics, testimonials, before-and-after photos, three pricing plans, FAQ, quote form and footer."
+    caption: "Full page at 1440px. All business details, reviews and figures shown are demonstration content."
 ---
 
 ## Overview
