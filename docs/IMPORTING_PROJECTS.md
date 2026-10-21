@@ -78,6 +78,7 @@ This saves into the git-ignored `asset-inbox/design-concepts/`:
 | `wellclean-full-1440.png` | Full page at 1440px wide, captured in scrolled segments so scroll animations have played, then stitched; the fixed header appears once |
 | `wellclean-mobile-390.png` | 390×844 mobile viewport at 2× density (780px file) |
 | `wellclean-capture.json` | URL, time and settings, as a record of where the images came from |
+| `wellclean-full-1440-part-NN.png` | The full page cut into 1440×1800 slices. **Send these through chat** (chat shrinks images over 2000px); they stitch back losslessly. |
 
 Nothing is edited or upscaled. Review the images before pointing a draft at them.
 

@@ -18,8 +18,8 @@ order: 2
 links:
   demo: https://wellclean.lovable.app/   # published Lovable build of the concept
 # Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
-cover: ../../../../asset-inbox/design-concepts/wellclean-lovable-long.png
-coverAlt: "Full-page screenshot of the WellClean website concept: light hero with a cleaning team photo, six service cards, three booking steps, about section, reviews, before-and-after photos, three pricing plans, FAQs and a quote form."
+cover: ../../../../asset-inbox/design-concepts/wellclean-desktop-1440.png   # authentic 1440×900 capture of wellclean.lovable.app
+coverAlt: "Desktop screenshot of the WellClean concept homepage: navigation bar, the headline “A spotless home, without lifting a finger.”, Get Free Quote and call buttons, three trust badges and a photo of a uniformed cleaning team in a living room."
 ---
 
 ## Overview

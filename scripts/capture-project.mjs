@@ -9,6 +9,7 @@
  * Produces, at the page's real rendering (no upscaling, no edits):
  *   <name>-desktop-1440.png   1440×900 viewport, top of the page
  *   <name>-full-1440.png      full page at 1440px wide
+ *   <name>-full-1440-part-NN.png  the same page in 1440×1800 slices (send these through chat)
  *   <name>-mobile-390.png     390×844 viewport at 2× pixel density (780px file)
  *   <name>-capture.json       URL, time and settings, as a record of where the images came from
  *
@@ -63,15 +64,18 @@ async function settleOnce(page) {
   await page.evaluate(async () => {
     const step = Math.max(200, Math.floor(innerHeight * 0.6));
     for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
-      scrollTo(0, y);
+      scrollTo({ top: y, behavior: 'instant' });
       await new Promise((r) => setTimeout(r, 180));
     }
-    scrollTo(0, document.documentElement.scrollHeight);
+    scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
     await new Promise((r) => setTimeout(r, 600));
-    scrollTo(0, 0);
+    scrollTo({ top: 0, behavior: 'instant' });
   });
   await page.evaluate(() => Promise.all([...document.images].filter((i) => !i.complete).map((i) => new Promise((r) => { i.onload = i.onerror = r; }))));
   await page.waitForTimeout(1200);
+  await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+  await page.waitForFunction(() => scrollY === 0, null, { timeout: 5000 }).catch(() => {});
+  await page.waitForTimeout(400);
 }
 
 /**
@@ -84,7 +88,7 @@ async function capturePage(page, path) {
   const height = Math.min(total, MAX_FULL_HEIGHT);
   const parts = [];
   for (let y = 0, i = 0; y < height; y += vh, i++) {
-    await page.evaluate((top) => scrollTo(0, top), y);
+    await page.evaluate((top) => scrollTo({ top, behavior: 'instant' }), y);
     await page.waitForTimeout(1100); // let reveal animations finish
     const actual = await page.evaluate(() => scrollY); // the last segment may stop short of y
     const buf = await page.screenshot();
@@ -111,12 +115,22 @@ async function capturePage(page, path) {
       top: Math.round(p.top * scale),
     })),
   );
-  await sharp({ create: { width: Math.round(1440 * scale), height: Math.round(height * scale), channels: 3, background: '#ffffff' } })
+  const fullPng = await sharp({ create: { width: Math.round(1440 * scale), height: Math.round(height * scale), channels: 3, background: '#ffffff' } })
     .composite(layers)
     .png()
-    .toFile(path);
-  await page.evaluate(() => scrollTo(0, 0));
-  return { pageHeight: total, truncated: total > MAX_FULL_HEIGHT, segments: parts.length };
+    .toBuffer();
+  await sharp(fullPng).toFile(path);
+  // Also save ≤1800px-tall slices: chat uploads shrink anything over 2000px, slices arrive intact.
+  const sliceH = 1800 * scale;
+  const totalH = Math.round(height * scale);
+  const slices = [];
+  for (let top = 0, n = 1; top < totalH; top += sliceH, n++) {
+    const file = path.replace(/\.png$/, `-part-${String(n).padStart(2, '0')}.png`);
+    await sharp(fullPng).extract({ left: 0, top, width: Math.round(1440 * scale), height: Math.min(sliceH, totalH - top) }).png().toFile(file);
+    slices.push(file.split(/[\\/]/).pop());
+  }
+  await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+  return { pageHeight: total, truncated: total > MAX_FULL_HEIGHT, segments: parts.length, slices };
 }
 
 const browser = await chromium.launch(channel ? { channel } : {}).catch((err) => {
@@ -147,7 +161,7 @@ try {
 
   writeFileSync(join(out, `${name}-capture.json`), JSON.stringify(record, null, 2) + '\n');
   console.log(`Saved to asset-inbox/${folder}/:`);
-  for (const f of record.files) console.log(`  ${f.file}`);
+  for (const f of record.files) console.log(`  ${f.file}${f.slices ? `  (+ ${f.slices.length} slices: ${f.slices[0]} …)` : ''}`);
 } catch (err) {
   console.error(`Capture failed: ${err.message}`);
   if (process.env.CAPTURE_DEBUG) console.error(err.stack);
