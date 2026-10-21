@@ -2,21 +2,18 @@
 title: "Fitness/Gym Website"
 tagline: "A dark, high-energy website design concept for a gym."
 summary: "An AI-assisted website design concept for a gym, made with Lovable. The full-page design covers classes, membership plans, coaches, member stories, a gallery, location and hours, and a sign-up form."
-status: draft          # change to "published" only after Jaber approves
-verified: false        # set to true once copy and assets are confirmed
+status: published
+verified: true
 category: Website
 stage: concept
 stageNote: "An AI-assisted design concept made with Lovable, not a live client site. Names, prices, statistics, photos and testimonials in the design are placeholder content."
 kind: "Website design concept"
-year: ""               # TODO(verify): e.g. "2026"
-role: "TODO: what you personally did (prompting, direction, editing)"
 stack: ["Lovable"]
 tags: ["Website concept", "Fitness", "Landing page"]
 accent: "#e5383b"
 featured: true
-order: 1
-# Private, git-ignored file. Copy an approved, optimised version next to this file before publishing.
-cover: ../../../../asset-inbox/design-concepts/fitness-gym-lovable-long.png
+order: 2
+cover: ./cover.png
 coverAlt: "Full-page screenshot of the Fitness/Gym website concept: dark hero with red accents, class cards, three membership plans, coach profiles, member story, gallery, location and hours, and a sign-up form."
 ---
 
@@ -35,11 +32,3 @@ A website design concept for a gym, created with Lovable as an AI-assisted build
 ## Status
 
 This is a design concept, not a site built for a real client. The gym name, coaches, prices, statistics and testimonials shown are placeholder design content.
-
-## My role
-
-TODO: Describe what you did yourself (brief, prompts, edits, decisions) and what the AI tool generated.
-
-## What I'd do next
-
-TODO: Optional. What would change if this became a real client project?

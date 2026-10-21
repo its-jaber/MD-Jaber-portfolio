@@ -45,7 +45,8 @@ const reveal: Variants = {
 };
 
 /** Card with pointer spotlight + subtle 3D tilt, framed media and a replaying scroll reveal. */
-export default function ProjectCard({ project: p, index }: { project: CardProject; index: number }) {
+/** `wide` = the card fills the double-width first slot on /work, so it needs a larger image. */
+export default function ProjectCard({ project: p, index, wide = false }: { project: CardProject; index: number; wide?: boolean }) {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLAnchorElement>(null);
   const mx = useMotionValue(50);
@@ -96,7 +97,7 @@ export default function ProjectCard({ project: p, index }: { project: CardProjec
               <img
                 src={p.cover.src}
                 srcSet={p.cover.srcset}
-                sizes={p.cover.narrow ? `${p.cover.width}px` : '(min-width: 760px) 50vw, 100vw'}
+                sizes={p.cover.narrow ? `${p.cover.width}px` : wide ? '(min-width: 760px) 92vw, 100vw' : '(min-width: 760px) 50vw, 100vw'}
                 width={p.cover.width}
                 height={p.cover.height}
                 alt={p.cover.alt}

@@ -127,7 +127,7 @@ export default function ProjectExplorer({ projects, categories, variant = 'full'
               exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.18 } }}
               transition={reduce ? { duration: 0 } : { layout: MOVE, duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Math.min(i, 6) * 0.04 }}
             >
-              <ProjectCard project={p} index={i} />
+              <ProjectCard project={p} index={i} wide={variant === 'full' && i === 0 && visible.length > 1 && !p.cover?.narrow} />
             </motion.li>
           ))}
         </AnimatePresence>

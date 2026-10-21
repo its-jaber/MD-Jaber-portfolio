@@ -136,7 +136,7 @@ export async function toCard(p: Project): Promise<CardProject> {
   let cover: CardProject['cover'];
   const src = await resolveImage(p, d.cover);
   if (src) {
-    const img = await getImage({ src, widths: widthsFor(src, [480, 800, 1200]), format: 'webp' });
+    const img = await getImage({ src, widths: widthsFor(src, [480, 800, 1200, 1600]), format: 'webp' });
     cover = {
       src: img.src,
       srcset: img.srcSet.attribute,
